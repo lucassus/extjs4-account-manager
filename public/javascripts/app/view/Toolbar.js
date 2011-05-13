@@ -8,22 +8,30 @@ Ext.define('AM.view.Toolbar', {
       action: 'addUser'
     });
 
+    this.editUserButton = new Ext.Button({
+      text: 'Edit user',
+      action: 'editUser',
+      disabled: true
+    });
+
     this.deleteUserButton = new Ext.Button({
       text: 'Delete User',
       action: 'deleteUser',
       disabled: true
     });
 
-    this.items = [this.addUserButton, this.deleteUserButton],
+    this.items = [this.addUserButton, this.editUserButton, this.deleteUserButton],
 
     this.callParent(arguments);
   },
 
-  enableDeleteButton: function() {
+  enableRecordRelatedButtons: function() {
+    this.editUserButton.enable();
     this.deleteUserButton.enable();
   },
 
-  disableDeleteButton: function() {
+  disableRecordRelatedButtons: function() {
+    this.editUserButton.disable();
     this.deleteUserButton.disable();
   }
 });

@@ -4,6 +4,7 @@ Ext.application({ // create a new instance of Application class
   appFolder: 'javascripts/app',
 
   controllers: [
+    'Toolbar',
     'Users'
   ]
 });

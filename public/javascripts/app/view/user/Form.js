@@ -1,8 +1,8 @@
-Ext.define('AM.view.user.Edit', {
+Ext.define('AM.view.user.Form', {
   extend: 'Ext.window.Window',
-  alias : 'widget.useredit',
+  alias : 'widget.userform',
 
-  title : 'Edit User',
+  title : 'Add / Edit User',
   layout: 'fit',
   autoShow: true,
 
