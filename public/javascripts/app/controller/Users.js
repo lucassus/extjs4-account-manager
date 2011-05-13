@@ -27,8 +27,6 @@ Ext.define('AM.controller.Users', {
   },
 
   editUser: function(grid, record) {
-    console.log("Double clicked on " + record.get('name'));
-
     var view = Ext.widget('userform'); // create user form widget instance
     view.down('form').loadRecord(record);
   },
@@ -40,8 +38,9 @@ Ext.define('AM.controller.Users', {
     var values = form.getValues();
 
     record.set(values);
-    win.close();
     this.getUsersStore().sync();
+
+    win.close();
   },
 
   selectionChange: function(grid, selections) {

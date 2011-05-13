@@ -8,6 +8,9 @@ Ext.define('AM.controller.Toolbar', {
   refs: [{
     ref: 'toolbar',
     selector: 'toolbar'
+  }, {
+    ref: 'userlist',
+    selector: 'userlist'
   }],
 
   init: function() {
@@ -19,7 +22,10 @@ Ext.define('AM.controller.Toolbar', {
       },
       'toolbar > button[action=editUser]': {
         click: function() {
-          alert('Edit User button clicked!');
+          var grid = this.getUserlist();
+          var record = grid.getSelectionModel().getSelection()[0];
+
+          this.getController('Users').editUser(grid, record);
         }
       },
       'toolbar > button[action=deleteUser]': {
