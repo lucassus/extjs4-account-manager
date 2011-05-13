@@ -5,17 +5,37 @@ Ext.define('AM.controller.Users', {
   models: ['User'],
 
   views: [
+    'Toolbar',
     'user.List',
     'user.Edit'
   ],
 
   init: function() {
     this.control({
+      'toolbar > button[action=addUser]': {
+        click: function() {
+          alert('Add User button clicked!');
+        }
+      },
+      'toolbar > button[action=deleteUser]': {
+        click: function() {
+          alert('Delete User button clicked!');
+        }
+      },
       'viewport > panel': {
         render: this.onPanelRendered
       },
       'userlist': {
-        itemdblclick: this.editUser
+        itemdblclick: this.editUser,
+        selectionchange: function(grid, selections) {
+          var toolbar = Ext.widget('toolbar');
+
+          if (selections.length > 0) {
+            toolbar.enableDeleteButton();
+          } else {
+            toolbar.disableDeleteButton();
+          }
+        }
       },
       'useredit button[action=save]': {
         click: this.updateUser
