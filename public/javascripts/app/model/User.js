@@ -1,10 +1,10 @@
 Ext.define('AM.model.User', {
   extend: 'Ext.data.Model',
-  fields: ['name', 'email'],
+  fields: ['first_name', 'last_name', 'email'],
 
   proxy: {
     type: 'rest',
-    url: 'data/users.json',
+    url: '/users.json',
     reader: {
       type: 'json',
       root: 'users'

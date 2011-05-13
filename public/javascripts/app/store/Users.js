@@ -7,11 +7,10 @@ Ext.define('AM.store.Users', {
 
   proxy: {
     type: 'ajax',
-    url: 'data/users.json',
+    url: '/users.json',
     reader: {
       type: 'json',
-      root: 'users',
-      successProperty: 'success'
+      record: 'user'
     }
   }
 });
