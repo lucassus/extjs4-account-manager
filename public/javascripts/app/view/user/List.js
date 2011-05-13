@@ -13,5 +13,9 @@ Ext.define('AM.view.user.List' ,{
     ];
 
     this.callParent(arguments);
+  },
+
+  getSelectedUser: function() {
+    return this.getSelectionModel().getSelection()[0];
   }
 });

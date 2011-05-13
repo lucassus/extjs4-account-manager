@@ -6,8 +6,9 @@ Ext.define('AM.store.Users', {
   autoLoad: true,
 
   proxy: {
-    type: 'ajax',
-    url: '/users.json',
+    type: 'rest',
+    url: '/users',
+    format: 'json',
     reader: {
       type: 'json',
       record: 'user'

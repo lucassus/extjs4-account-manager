@@ -1,9 +1,8 @@
 Ext.define('AM.controller.Toolbar', {
   extend: 'Ext.app.Controller',
 
-  views: [
-    'Toolbar'
-  ],
+  stores: ['Users'],
+  views: ['Toolbar'],
 
   refs: [{
     ref: 'toolbar',
@@ -17,20 +16,28 @@ Ext.define('AM.controller.Toolbar', {
     this.control({
       'toolbar > button[action=addUser]': {
         click: function() {
-          alert('Add User button clicked!');
+          var view = Ext.widget('userform');
+          view.show();
         }
       },
       'toolbar > button[action=editUser]': {
         click: function() {
           var grid = this.getUserlist();
-          var record = grid.getSelectionModel().getSelection()[0];
+          var record = grid.getSelectedUser();
 
           this.getController('Users').editUser(grid, record);
         }
       },
       'toolbar > button[action=deleteUser]': {
         click: function() {
-          alert('Delete User button clicked!');
+          var grid = this.getUserlist();
+          var record = grid.getSelectedUser();
+
+          if (record) {
+            var store = this.getUsersStore();
+            store.remove(record);
+            store.sync();
+          }
         }
       }
     });

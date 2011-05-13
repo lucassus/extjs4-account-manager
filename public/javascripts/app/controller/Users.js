@@ -31,6 +31,18 @@ Ext.define('AM.controller.Users', {
     view.down('form').loadRecord(record);
   },
 
+  addUser: function(button) {
+    console.log('Add user button clicked!');
+
+    var win = button.up('window');
+    var form = win.down('form');
+    var values = form.getValues();
+
+    console.log(values);
+
+    win.close();
+  },
+
   updateUser: function(button) {
     var win = button.up('window');
     var form = win.down('form');
