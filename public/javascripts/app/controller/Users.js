@@ -10,6 +10,11 @@ Ext.define('AM.controller.Users', {
     'user.Edit'
   ],
 
+  refs: [{
+    ref: 'toolbar',
+    selector: 'toolbar'
+  }],
+
   init: function() {
     this.control({
       'toolbar > button[action=addUser]': {
@@ -27,15 +32,7 @@ Ext.define('AM.controller.Users', {
       },
       'userlist': {
         itemdblclick: this.editUser,
-        selectionchange: function(grid, selections) {
-          var toolbar = Ext.widget('toolbar');
-
-          if (selections.length > 0) {
-            toolbar.enableDeleteButton();
-          } else {
-            toolbar.disableDeleteButton();
-          }
-        }
+        selectionchange: this.selectionChange
       },
       'useredit button[action=save]': {
         click: this.updateUser
@@ -65,6 +62,19 @@ Ext.define('AM.controller.Users', {
     record.set(values);
     win.close();
     this.getUsersStore().sync();
+  },
+
+  selectionChange: function(grid, selections) {
+    console.log('User list selection changed.');
+    var toolbar = this.getToolbar();
+
+    if (selections.length > 0) {
+      console.log('Enable button');
+      toolbar.enableDeleteButton();
+    } else {
+      console.log('Disable button');
+      toolbar.disableDeleteButton();
+    }
   }
 
 });
