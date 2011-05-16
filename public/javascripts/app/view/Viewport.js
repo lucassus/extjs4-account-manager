@@ -4,8 +4,8 @@ Ext.define('AM.view.Viewport', {
   layout: 'border',
   items: [{
     region: 'north',
-    xtype: 'toolbar'
-  },{
+    xtype: 'usertoolbar'
+  }, {
     region: 'center',
     xtype: 'userlist',
     title: 'Users',

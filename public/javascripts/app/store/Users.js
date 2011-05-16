@@ -4,14 +4,23 @@ Ext.define('AM.store.Users', {
 
   model: 'AM.model.User',
   autoLoad: true,
+  autoSync: true,
 
   proxy: {
-    type: 'rest',
     url: '/users',
+    type: 'rest',
     format: 'json',
+
     reader: {
       type: 'json',
       record: 'user'
+    },
+    writer: {
+      type: 'json',
+      // wrap user params for Rails
+      getRecordData: function(record) {
+        return { user: record.data };
+      }
     }
   }
 });

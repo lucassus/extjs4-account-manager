@@ -31,26 +31,20 @@ Ext.define('AM.controller.Users', {
     view.down('form').loadRecord(record);
   },
 
-  addUser: function(button) {
-    console.log('Add user button clicked!');
-
-    var win = button.up('window');
-    var form = win.down('form');
-    var values = form.getValues();
-
-    console.log(values);
-
-    win.close();
-  },
-
   updateUser: function(button) {
     var win = button.up('window');
     var form = win.down('form');
+
+    var store = this.getUsersStore();
     var record = form.getRecord();
     var values = form.getValues();
 
-    record.set(values);
-    this.getUsersStore().sync();
+    debugger
+    if (record) { // perform update
+      store.getById(record.getId()).set(values);
+    } else { // perform create
+      store.add(values);
+    }
 
     win.close();
   },

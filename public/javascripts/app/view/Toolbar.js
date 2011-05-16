@@ -1,6 +1,6 @@
 Ext.define('AM.view.Toolbar', {
   extend: 'Ext.toolbar.Toolbar',
-  alias: 'widget.toolbar',
+  alias: 'widget.usertoolbar',
 
   initComponent: function() {
     this.addUserButton = new Ext.Button({

@@ -6,7 +6,7 @@ Ext.define('AM.controller.Toolbar', {
 
   refs: [{
     ref: 'toolbar',
-    selector: 'toolbar'
+    selector: 'usertoolbar'
   }, {
     ref: 'userlist',
     selector: 'userlist'
@@ -36,7 +36,6 @@ Ext.define('AM.controller.Toolbar', {
           if (record) {
             var store = this.getUsersStore();
             store.remove(record);
-            store.sync();
           }
         }
       }
