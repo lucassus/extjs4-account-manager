@@ -4,7 +4,7 @@ Ext.define('AM.store.Users', {
 
   model: 'AM.model.User',
   autoLoad: true,
-  autoSync: true,
+  autoSync: false,
 
   proxy: {
     url: '/users',
@@ -13,7 +13,10 @@ Ext.define('AM.store.Users', {
 
     reader: {
       type: 'json',
-      record: 'user'
+      root: 'users',
+      record: 'user',
+      successProperty: 'success',
+      idProperty: 'id'
     },
     writer: {
       type: 'json',
@@ -21,6 +24,18 @@ Ext.define('AM.store.Users', {
       getRecordData: function(record) {
         return { user: record.data };
       }
+    }
+  },
+
+  listeners: {
+    load: function() {
+      console.log(arguments);
+    },
+    update: function() {
+      console.log(arguments);
+    },
+    beforesync: function() {
+      console.log(arguments);
     }
   }
 });

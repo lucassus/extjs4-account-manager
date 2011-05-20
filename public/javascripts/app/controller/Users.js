@@ -39,13 +39,14 @@ Ext.define('AM.controller.Users', {
     var record = form.getRecord();
     var values = form.getValues();
 
-    debugger
     if (record) { // perform update
-      store.getById(record.getId()).set(values);
+      var user = store.getById(record.getId());
+      user.set(values);
     } else { // perform create
       store.add(values);
     }
 
+    store.sync();
     win.close();
   },
 
