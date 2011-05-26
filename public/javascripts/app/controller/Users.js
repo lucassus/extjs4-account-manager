@@ -24,36 +24,25 @@ Ext.define('AM.controller.Users', {
         click: this.updateUser
       },
       'button[action=addUser]': {
-        click: function() {
-          var view = Ext.widget('userform');
-          view.show();
-        }
+        click: this.addUser
       },
       'button[action=editUser]': {
-        click: function() {
-          var grid = this.getList();
-          var record = grid.getSelectedUser();
-
-          this.getController('Users').editUser(grid, record);
-        }
+        click: this.editUser
       },
       'button[action=deleteUser]': {
-        click: function() {
-          var grid = this.getList();
-          var record = grid.getSelectedUser();
-
-          if (record) {
-            var store = this.getUsersStore();
-            store.remove(record);
-            store.sync();
-          }
-        }
+        click: this.deleteUser
       }
     });
   },
 
-  editUser: function(grid, record) {
-    var view = Ext.widget('userform'); // create an user form widget instance
+  addUser: function() {
+    var view = Ext.widget('userform');
+    view.show();
+  },
+
+  editUser: function() {
+    var record = this.getList().getSelectedUser();
+    var view = Ext.widget('userform');
     view.down('form').loadRecord(record);
   },
 
@@ -73,6 +62,17 @@ Ext.define('AM.controller.Users', {
 
     store.sync();
     win.close();
+  },
+
+  deleteUser: function() {
+    var record = this.getList().getSelectedUser();
+
+    if (record) {
+      var store = this.getUsersStore();
+      store.remove(record);
+      store.sync();
+    }
+
   },
 
   selectionChange: function(selectionModel, selections) {
