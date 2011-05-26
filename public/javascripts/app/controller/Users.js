@@ -10,8 +10,8 @@ Ext.define('AM.controller.Users', {
   ],
 
   refs: [{
-    ref: 'toolbar',
-    selector: 'toolbar'
+    ref: 'list',
+    selector: 'userlist'
   }],
 
   init: function() {
@@ -22,12 +22,38 @@ Ext.define('AM.controller.Users', {
       },
       'userform button[action=save]': {
         click: this.updateUser
+      },
+      'button[action=addUser]': {
+        click: function() {
+          var view = Ext.widget('userform');
+          view.show();
+        }
+      },
+      'button[action=editUser]': {
+        click: function() {
+          var grid = this.getList();
+          var record = grid.getSelectedUser();
+
+          this.getController('Users').editUser(grid, record);
+        }
+      },
+      'button[action=deleteUser]': {
+        click: function() {
+          var grid = this.getList();
+          var record = grid.getSelectedUser();
+
+          if (record) {
+            var store = this.getUsersStore();
+            store.remove(record);
+            store.sync();
+          }
+        }
       }
     });
   },
 
   editUser: function(grid, record) {
-    var view = Ext.widget('userform'); // create user form widget instance
+    var view = Ext.widget('userform'); // create an user form widget instance
     view.down('form').loadRecord(record);
   },
 
@@ -40,8 +66,7 @@ Ext.define('AM.controller.Users', {
     var values = form.getValues();
 
     if (record) { // perform update
-      var user = store.getById(record.getId());
-      user.set(values);
+      record.set(values);
     } else { // perform create
       store.add(values);
     }
@@ -50,13 +75,13 @@ Ext.define('AM.controller.Users', {
     win.close();
   },
 
-  selectionChange: function(grid, selections) {
-    var toolbar = this.getToolbar();
+  selectionChange: function(selectionModel, selections) {
+    var grid = this.getList();
 
     if (selections.length > 0) {
-      toolbar.enableRecordRelatedButtons();
+      grid.enableRecordRelatedButtons();
     } else {
-      toolbar.disableRecordRelatedButtons();
+      grid.disableRecordRelatedButtons();
     }
   }
 
