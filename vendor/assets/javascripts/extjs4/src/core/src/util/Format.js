@@ -1,7 +1,21 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Format
 
-This class is a centralized place for formatting functions inside the library. It includes
+This class is a centralized place for formatting functions. It includes
 functions to format various different types of data, such as text, dates and numeric values.
 
 __Localization__
@@ -13,10 +27,10 @@ Options include:
 - currenyPrecision
 - currencySign
 - currencyAtEnd
-This class also uses the default date format defined here: {@link Ext.date#defaultFormat}.
+This class also uses the default date format defined here: {@link Ext.Date#defaultFormat}.
 
 __Using with renderers__
-There are two helper functions that return a new function that can be used in conjunction with 
+There are two helper functions that return a new function that can be used in conjunction with
 grid renderers:
 
     columns: [{
@@ -26,7 +40,7 @@ grid renderers:
         dataIndex: 'time',
         renderer: Ext.util.Format.numberRenderer('0.000')
     }]
-    
+
 Functions that only take a single argument can also be passed directly:
     columns: [{
         dataIndex: 'cost',
@@ -35,7 +49,7 @@ Functions that only take a single argument can also be passed directly:
         dataIndex: 'productCode',
         renderer: Ext.util.Format.uppercase
     }]
-    
+
 __Using with XTemplates__
 XTemplates can also directly use Ext.util.Format functions:
 
@@ -65,50 +79,45 @@ XTemplates can also directly use Ext.util.Format functions:
 
     Ext.apply(UtilFormat, {
         /**
-         * @type String
-         * @property thousandSeparator
+         * @property {String} thousandSeparator
          * <p>The character that the {@link #number} function uses as a thousand separator.</p>
-         * <p>This defaults to <code>,</code>, but may be overridden in a locale file.</p>
+         * <p>This may be overridden in a locale file.</p>
          */
         thousandSeparator: ',',
 
         /**
-         * @type String
-         * @property decimalSeparator
+         * @property {String} decimalSeparator
          * <p>The character that the {@link #number} function uses as a decimal point.</p>
-         * <p>This defaults to <code>.</code>, but may be overridden in a locale file.</p>
+         * <p>This may be overridden in a locale file.</p>
          */
         decimalSeparator: '.',
 
         /**
-         * @type Number
-         * @property currencyPrecision
+         * @property {Number} currencyPrecision
          * <p>The number of decimal places that the {@link #currency} function displays.</p>
-         * <p>This defaults to <code>2</code>, but may be overridden in a locale file.</p>
+         * <p>This may be overridden in a locale file.</p>
          */
         currencyPrecision: 2,
 
         /**
-         * @type String
-         * @property currencySign
+         * @property {String} currencySign
          * <p>The currency sign that the {@link #currency} function displays.</p>
-         * <p>This defaults to <code>$</code>, but may be overridden in a locale file.</p>
+         * <p>This may be overridden in a locale file.</p>
          */
         currencySign: '$',
 
         /**
-         * @type Boolean
-         * @property currencyAtEnd
+         * @property {Boolean} currencyAtEnd
          * <p>This may be set to <code>true</code> to make the {@link #currency} function
          * append the currency sign to the formatted value.</p>
-         * <p>This defaults to <code>false</code>, but may be overridden in a locale file.</p>
+         * <p>This may be overridden in a locale file.</p>
          */
         currencyAtEnd: false,
 
         /**
          * Checks a reference and converts it to empty string if it is undefined
-         * @param {Mixed} value Reference to check
-         * @return {Mixed} Empty string if converted, otherwise the original value
+         * @param {Object} value Reference to check
+         * @return {Object} Empty string if converted, otherwise the original value
          */
         undef : function(value) {
             return value !== undefined ? value : "";
@@ -116,7 +125,7 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Checks a reference and converts it to the default value if it's empty
-         * @param {Mixed} value Reference to check
+         * @param {Object} value Reference to check
          * @param {String} defaultValue The value to insert of it's undefined (defaults to "")
          * @return {String}
          */
@@ -184,7 +193,7 @@ XTemplates can also directly use Ext.util.Format functions:
             for (; i < decimals; i++) {
                 format += '0';
             }
-            v = UtilFormat.number(v, format); 
+            v = UtilFormat.number(v, format);
             if ((end || UtilFormat.currencyAtEnd) === true) {
                 return Ext.String.format("{0}{1}{2}", negativeSign, v, currencySign || UtilFormat.currencySign);
             } else {
@@ -222,7 +231,7 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Strips all HTML tags
-         * @param {Mixed} value The text from which to strip tags
+         * @param {Object} value The text from which to strip tags
          * @return {String} The stripped text
          */
         stripTags : function(v) {
@@ -231,7 +240,7 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Strips all script tags
-         * @param {Mixed} value The text from which to strip script tags
+         * @param {Object} value The text from which to strip script tags
          * @return {String} The stripped text
          */
         stripScripts : function(v) {
@@ -258,6 +267,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
          * </code></pre>
          * @return {Function} A function that operates on the passed value.
+         * @method
          */
         math : function(){
             var fns = {};
@@ -292,7 +302,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * <p>The <i>presence</i> of a thousand separator character in the format string specifies that
          * the <u>locale-specific</u> thousand separator (if any) is inserted separating thousand groups.</p>
          * <p>By default, "," is expected as the thousand separator, and "." is expected as the decimal separator.</p>
-         * <p><b>New to Ext4</b></p>
+         * <p><b>New to Ext JS 4</b></p>
          * <p>Locale-specific characters are always used in the formatted output when inserting
          * thousand and decimal separators.</p>
          * <p>The format string must specify separator characters according to US/UK conventions ("," as the
@@ -314,8 +324,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * @param {String} format The way you would like to format this text.
          * @return {String} The formatted number.
          */
-        number:
-            function(v, formatString) {
+        number: function(v, formatString) {
             if (!formatString) {
                 return v;
             }
@@ -395,6 +404,15 @@ XTemplates can also directly use Ext.util.Format functions:
                 }
             }
 
+            if (neg) {
+                /*
+                 * Edge case. If we have a very small negative number it will get rounded to 0,
+                 * however the initial check at the top will still report as negative. Replace
+                 * everything but 1-9 and check if the string is empty to determine a 0 value.
+                 */
+                neg = fnum.replace(/[^1-9]/g, '') !== '';
+            }
+
             return (neg ? '-' : '') + formatString.replace(/[\d,?\.?]+/, fnum);
         },
 
@@ -431,47 +449,58 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Capitalize the given string. See {@link Ext.String#capitalize}.
+         * Alias for {@link Ext.String#capitalize}.
+         * @method
+         * @alias Ext.String#capitalize
          */
         capitalize: Ext.String.capitalize,
 
         /**
-         * Truncate a string and add an ellipsis ('...') to the end if it exceeds the specified length.
-         * See {@link Ext.String#ellipsis}.
+         * Alias for {@link Ext.String#ellipsis}.
+         * @method
+         * @alias Ext.String#ellipsis
          */
         ellipsis: Ext.String.ellipsis,
 
         /**
-         * Formats to a string. See {@link Ext.String#format}
+         * Alias for {@link Ext.String#format}.
+         * @method
+         * @alias Ext.String#format
          */
         format: Ext.String.format,
 
         /**
-         * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
-         * See {@link Ext.string#htmlDecode}.
+         * Alias for {@link Ext.String#htmlDecode}.
+         * @method
+         * @alias Ext.String#htmlDecode
          */
         htmlDecode: Ext.String.htmlDecode,
 
         /**
-         * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
-         * See {@link Ext.String#htmlEncode}.
+         * Alias for {@link Ext.String#htmlEncode}.
+         * @method
+         * @alias Ext.String#htmlEncode
          */
         htmlEncode: Ext.String.htmlEncode,
 
         /**
-         * Adds left padding to a string. See {@link Ext.String#leftPad}
+         * Alias for {@link Ext.String#leftPad}.
+         * @method
+         * @alias Ext.String#leftPad
          */
         leftPad: Ext.String.leftPad,
 
         /**
-         * Trims any whitespace from either side of a string. See {@link Ext.String#trim}.
+         * Alias for {@link Ext.String#trim}.
+         * @method
+         * @alias Ext.String#trim
          */
         trim : Ext.String.trim,
 
         /**
          * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
          * (e.g. 10, "10", "10 10", "10 10 10" and "10 10 10 10" are all valid options and would return the same result)
-         * @param {Number|String} v The encoded margins
+         * @param {Number/String} v The encoded margins
          * @return {Object} An object with margin sizes for top, right, bottom and left
          */
         parseBox : function(box) {
@@ -510,3 +539,4 @@ XTemplates can also directly use Ext.util.Format functions:
         }
     });
 })();
+

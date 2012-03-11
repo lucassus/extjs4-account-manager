@@ -98,4 +98,3 @@ Ext.define('AM.controller.Users', {
   }
 
 });
-

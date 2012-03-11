@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 // Currently has the following issues:
 // - Does not handle postEditValue
 // - Fields without editors need to sync with their values in Store
@@ -32,6 +46,10 @@ Ext.define('Ext.grid.RowEditor', {
     lastScrollTop: 0,
 
     border: false,
+    
+    // Change the hideMode to offsets so that we get accurate measurements when
+    // the roweditor is hidden for laying out things like a TriggerField.
+    hideMode: 'offsets',
 
     initComponent: function() {
         var me = this,
@@ -202,7 +220,7 @@ Ext.define('Ext.grid.RowEditor', {
         }
     },
 
-    onFieldAdd: function(hm, fieldId, column) {
+    onFieldAdd: function(map, fieldId, column) {
         var me = this,
             colIdx = me.editingPlugin.grid.headerCt.getHeaderIndex(column),
             field = column.getEditor({ xtype: 'displayfield' });
@@ -210,24 +228,26 @@ Ext.define('Ext.grid.RowEditor', {
         me.insert(colIdx, field);
     },
 
-    onFieldRemove: function(hm, fieldId, column) {
+    onFieldRemove: function(map, fieldId, column) {
         var me = this,
             field = column.getEditor(),
-            fieldDom = field.el.dom;
+            fieldEl = field.el;
         me.remove(field, false);
-        fieldDom.parentNode.removeChild(fieldDom);
+        if (fieldEl) {
+            fieldEl.remove();
+        }
     },
 
-    onFieldReplace: function(hm, fieldId, column, oldColumn) {
+    onFieldReplace: function(map, fieldId, column, oldColumn) {
         var me = this;
-        me.onFieldRemove(hm, fieldId, oldColumn);
+        me.onFieldRemove(map, fieldId, oldColumn);
     },
 
     clearFields: function() {
         var me = this,
-            hm = me.columns;
-        hm.each(function(fieldId) {
-            hm.removeAtKey(fieldId);
+            map = me.columns;
+        map.each(function(fieldId) {
+            map.removeAtKey(fieldId);
         });
     },
 
@@ -407,14 +427,27 @@ Ext.define('Ext.grid.RowEditor', {
         }
 
         // Get a default display field if necessary
-        field = column.getEditor(null, { xtype: 'displayfield' });
+        field = column.getEditor(null, {
+            xtype: 'displayfield',
+            // Default display fields will not return values. This is done because
+            // the display field will pick up column renderers from the grid.
+            getModelData: function() {
+                return null;
+            }
+        });
         field.margins = '0 0 0 2';
-        field.setWidth(column.getWidth() - 2);
+        field.setWidth(column.getDesiredWidth() - 2);
         me.mon(field, 'change', me.onFieldChange, me);
 
         // Maintain mapping of fields-to-columns
         // This will fire events that maintain our container items
         me.columns.add(field.id, column);
+        if (column.hidden) {
+            me.onColumnHide(column);
+        }
+        if (me.isVisible() && me.context) {
+            me.renderColumnData(field, me.context.record);
+        }
     },
 
     loadRecord: function(record) {
@@ -440,7 +473,7 @@ Ext.define('Ext.grid.RowEditor', {
             view = grid.view,
             store = view.store,
             column = me.columns.get(field.id),
-            value = field.getRawValue();
+            value = record.get(column.dataIndex);
 
         // honor our column's renderer (TemplateHeader sets renderer for us!)
         if (column.renderer) {
@@ -475,8 +508,8 @@ Ext.define('Ext.grid.RowEditor', {
 
     /**
      * Start editing the specified grid at the specified position.
-     * @param {Model} record The Store data record which backs the row to be edited.
-     * @param {Model} columnHeader The Column object defining the column to be edited.
+     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
      */
     startEdit: function(record, columnHeader) {
         var me = this,

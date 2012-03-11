@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.feature.Summary
  * @extends Ext.grid.feature.AbstractSummary
@@ -27,11 +41,12 @@
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage
  *
+ *     @example
  *     Ext.define('TestResult', {
  *         extend: 'Ext.data.Model',
  *         fields: ['student', {
@@ -67,7 +82,7 @@
  *             dataIndex: 'student',
  *             text: 'Name',
  *             summaryType: 'count',
- *             summaryRenderer: function(value){
+ *             summaryRenderer: function(value, summaryData, dataIndex) {
  *                 return Ext.String.format('{0} student{1}', value, value !== 1 ? 's' : ''); 
  *             }
  *         }, {
@@ -162,7 +177,7 @@ Ext.define('Ext.grid.feature.Summary', {
             
         for (i = 0, length = columns.length; i < length; ++i) {
             comp = Ext.getCmp(columns[i].id);
-            data[comp.dataIndex] = me.getSummary(store, comp.summaryType, comp.dataIndex, false);
+            data[comp.id] = me.getSummary(store, comp.summaryType, comp.dataIndex, false);
         }
         return data;
     }

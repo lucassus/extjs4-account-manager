@@ -1,14 +1,25 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.ComponentDragger
  * @extends Ext.dd.DragTracker
  * <p>A subclass of Ext.dd.DragTracker which handles dragging any Component.</p>
  * <p>This is configured with a Component to be made draggable, and a config object for the
  * {@link Ext.dd.DragTracker} class.</p>
- * <p>A {@link #} delegate may be provided which may be either the element to use as the mousedown target
+ * <p>A {@link #delegate} may be provided which may be either the element to use as the mousedown target
  * or a {@link Ext.DomQuery} selector to activate multiple mousedown targets.</p>
- * @constructor Create a new ComponentTracker
- * @param {object} comp The Component to provide dragging for.
- * @param {object} config The config object
  */
 Ext.define('Ext.util.ComponentDragger', {
 
@@ -18,7 +29,7 @@ Ext.define('Ext.util.ComponentDragger', {
      */
 
     /**
-     * @cfg {String/Element} delegate
+     * @cfg {String/Ext.Element} delegate
      * Optional. <p>A {@link Ext.DomQuery DomQuery} selector which identifies child elements within the Component's encapsulating
      * Element which are the drag handles. This limits dragging to only begin when the matching elements are mousedowned.</p>
      * <p>This may also be a specific child element within the Component's encapsulating element to use as the drag handle.</p>
@@ -26,13 +37,18 @@ Ext.define('Ext.util.ComponentDragger', {
 
     /**
      * @cfg {Boolean} constrainDelegate
-     * Specify as <code>true</code> to constrain the drag handles within the {@link constrainTo} region.
+     * Specify as <code>true</code> to constrain the drag handles within the {@link #constrainTo} region.
      */
 
     extend: 'Ext.dd.DragTracker',
 
     autoStart: 500,
 
+    /**
+     * Creates new ComponentDragger.
+     * @param {Object} comp The Component to provide dragging for.
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(comp, config) {
         this.comp = comp;
         this.initialConstrainTo = config.constrainTo;
@@ -100,7 +116,7 @@ Ext.define('Ext.util.ComponentDragger', {
             comp = (me.proxy && !me.comp.liveDrag) ? me.proxy : me.comp,
             offset = me.getOffset(me.constrain || me.constrainDelegate ? 'dragTarget' : null);
 
-        comp.setPosition.apply(comp, [me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]]);
+        comp.setPosition(me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]);
     },
 
     onEnd: function(e) {

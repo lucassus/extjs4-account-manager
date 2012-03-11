@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.ComponentManager
  * @extends Ext.AbstractManager
@@ -26,7 +40,7 @@ Ext.define('Ext.ComponentManager', {
      * Creates a new Component from the specified config object using the
      * config object's xtype to determine the class to instantiate.
      * @param {Object} config A configuration object for the Component you wish to create.
-     * @param {Constructor} defaultType The constructor to provide the default Component type if
+     * @param {Function} defaultType (optional) The constructor to provide the default Component type if
      * the config object does not contain a <code>xtype</code>. (Optional if the config contains a <code>xtype</code>).
      * @return {Ext.Component} The newly instantiated Component.
      */

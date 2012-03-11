@@ -1,29 +1,44 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.property.Grid
  * @extends Ext.grid.Panel
+ *
  * A specialized grid implementation intended to mimic the traditional property grid as typically seen in
  * development IDEs.  Each row in the grid represents a property of some object, and the data is stored
  * as a set of name/value pairs in {@link Ext.grid.property.Property Properties}.  Example usage:
- * <pre><code>
-var grid = new Ext.grid.property.Grid({
-    title: 'Properties Grid',
-    width: 300,
-    renderTo: 'grid-ct',
-    source: {
-        "(name)": "My Object",
-        "Created": Ext.Date.parse('10/15/2006', 'm/d/Y'),
-        "Available": false,
-        "Version": .01,
-        "Description": "A test object"
-    }
-});
-</code></pre>
- * @constructor
- * @param {Object} config The grid config object
+ *
+ *     @example
+ *     Ext.create('Ext.grid.property.Grid', {
+ *         title: 'Properties Grid',
+ *         width: 300,
+ *         renderTo: Ext.getBody(),
+ *         source: {
+ *             "(name)": "My Object",
+ *             "Created": Ext.Date.parse('10/15/2006', 'm/d/Y'),
+ *             "Available": false,
+ *             "Version": .01,
+ *             "Description": "A test object"
+ *         }
+ *     });
  */
 Ext.define('Ext.grid.property.Grid', {
 
     extend: 'Ext.grid.Panel',
+
+    alias: 'widget.propertygrid',
 
     alternateClassName: 'Ext.grid.PropertyGrid',
 
@@ -116,6 +131,11 @@ var grid = Ext.create('Ext.grid.property.Grid', {
      */
     nameField: 'name',
 
+    /**
+     * @cfg {Number} nameColumnWidth
+     * Optional. Specify the width for the name column. The value column will take any remaining space. Defaults to <tt>115</tt>.
+     */
+
     // private config overrides
     enableColumnMove: false,
     columnLines: true,
@@ -138,7 +158,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
             // Inject a startEdit which always edits the value column
             startEdit: function(record, column) {
                 // Maintainer: Do not change this 'this' to 'me'! It is the CellEditing object's own scope.
-                Ext.grid.plugin.CellEditing.prototype.startEdit.call(this, record, me.headerCt.child('#' + me.valueField));
+                return this.self.prototype.startEdit.call(this, record, me.headerCt.child('#' + me.valueField));
             }
         }));
 
@@ -147,8 +167,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
             onCellSelect: function(position) {
                 if (position.column != 1) {
                     position.column = 1;
-                    Ext.selection.CellModel.prototype.onCellSelect.call(this, position);
                 }
+                return this.self.prototype.onCellSelect.call(this, position);
             }
         };
         me.customRenderers = me.customRenderers || {};
@@ -166,12 +186,12 @@ var grid = Ext.create('Ext.grid.property.Grid', {
             /**
              * @event beforepropertychange
              * Fires before a property value changes.  Handlers can return false to cancel the property change
-             * (this will internally call {@link Ext.data.Record#reject} on the property's record).
+             * (this will internally call {@link Ext.data.Model#reject} on the property's record).
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'beforepropertychange',
             /**
@@ -180,8 +200,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'propertychange'
         );
@@ -202,7 +222,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         };
 
         // Track changes to the data so we can fire our events.
-        this.store.on('update', me.onUpdate, me);
+        me.store.on('update', me.onUpdate, me);
     },
 
     // private
@@ -213,12 +233,12 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         if (operation == Ext.data.Model.EDIT) {
             v = record.get(me.valueField);
             oldValue = record.modified.value;
-            if (me.fireEvent('beforepropertychange', me.source, record.id, v, oldValue) !== false) {
+            if (me.fireEvent('beforepropertychange', me.source, record.getId(), v, oldValue) !== false) {
                 if (me.source) {
-                    me.source[record.id] = v;
+                    me.source[record.getId()] = v;
                 }
                 record.commit();
-                me.fireEvent('propertychange', me.source, record.id, v, oldValue);
+                me.fireEvent('propertychange', me.source, record.getId(), v, oldValue);
             } else {
                 record.reject();
             }
@@ -232,7 +252,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         } else if (direction == 'right') {
             direction = 'down';
         }
-        var pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
+        pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
         if (!pos.column) {
             pos.column = 1;
         }
@@ -243,7 +263,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
     // returns the correct editor type for the property type, or a custom one keyed by the property name
     getCellEditor : function(record, column) {
         var me = this,
-            propName = record.get(me.nameField), 
+            propName = record.get(me.nameField),
             val = record.get(me.valueField),
             editor = me.customEditors[propName];
 
@@ -281,7 +301,9 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 
     destroyEditors: function (editors) {
         for (var ed in editors) {
-            Ext.destroy(editors[ed]);
+            if (editors.hasOwnProperty(ed)) {
+                Ext.destroy(editors[ed]);
+            }
         }
     },
 
@@ -319,7 +341,7 @@ grid.setSource({
     /**
      * Sets the value of a property.
      * @param {String} prop The name of the property to set
-     * @param {Mixed} value The value to test
+     * @param {Object} value The value to test
      * @param {Boolean} create (Optional) True to create the property if it doesn't already exist. Defaults to <tt>false</tt>.
      */
     setProperty: function(prop, value, create) {

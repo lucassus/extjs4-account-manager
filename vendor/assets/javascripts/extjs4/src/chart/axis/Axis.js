@@ -1,46 +1,58 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.axis.Axis
  * @extends Ext.chart.axis.Abstract
- * 
+ *
  * Defines axis for charts. The axis position, type, style can be configured.
- * The axes are defined in an axes array of configuration objects where the type, 
- * field, grid and other configuration options can be set. To know more about how 
+ * The axes are defined in an axes array of configuration objects where the type,
+ * field, grid and other configuration options can be set. To know more about how
  * to create a Chart please check the Chart class documentation. Here's an example for the axes part:
  * An example of axis for a series (in this case for an area chart that has multiple layers of yFields) could be:
- * 
-  <pre><code>
-    axes: [{
-        type: 'Numeric',
-        grid: true,
-        position: 'left',
-        fields: ['data1', 'data2', 'data3'],
-        title: 'Number of Hits',
-        grid: {
-            odd: {
-                opacity: 1,
-                fill: '#ddd',
-                stroke: '#bbb',
-                'stroke-width': 1
-            }
-        },
-        minimum: 0
-    }, {
-        type: 'Category',
-        position: 'bottom',
-        fields: ['name'],
-        title: 'Month of the Year',
-        grid: true,
-        label: {
-            rotate: {
-                degrees: 315
-            }
-        }
-    }]
-   </code></pre>
- * 
+ *
+ *     axes: [{
+ *         type: 'Numeric',
+ *         grid: true,
+ *         position: 'left',
+ *         fields: ['data1', 'data2', 'data3'],
+ *         title: 'Number of Hits',
+ *         grid: {
+ *             odd: {
+ *                 opacity: 1,
+ *                 fill: '#ddd',
+ *                 stroke: '#bbb',
+ *                 'stroke-width': 1
+ *             }
+ *         },
+ *         minimum: 0
+ *     }, {
+ *         type: 'Category',
+ *         position: 'bottom',
+ *         fields: ['name'],
+ *         title: 'Month of the Year',
+ *         grid: true,
+ *         label: {
+ *             rotate: {
+ *                 degrees: 315
+ *             }
+ *         }
+ *     }]
+ *
  * In this case we use a `Numeric` axis for displaying the values of the Area series and a `Category` axis for displaying the names of
- * the store elements. The numeric axis is placed on the left of the screen, while the category axis is placed at the bottom of the chart. 
- * Both the category and numeric axes have `grid` set, which means that horizontal and vertical lines will cover the chart background. In the 
+ * the store elements. The numeric axis is placed on the left of the screen, while the category axis is placed at the bottom of the chart.
+ * Both the category and numeric axes have `grid` set, which means that horizontal and vertical lines will cover the chart background. In the
  * category axis the labels will be rotated so they can fit the space better.
  */
 Ext.define('Ext.chart.axis.Axis', {
@@ -56,69 +68,119 @@ Ext.define('Ext.chart.axis.Axis', {
     /* End Definitions */
 
     /**
-     * @cfg {Number} majorTickSteps 
+     * @cfg {Boolean/Object} grid
+     * The grid configuration enables you to set a background grid for an axis.
+     * If set to *true* on a vertical axis, vertical lines will be drawn.
+     * If set to *true* on a horizontal axis, horizontal lines will be drawn.
+     * If both are set, a proper grid with horizontal and vertical lines will be drawn.
+     *
+     * You can set specific options for the grid configuration for odd and/or even lines/rows.
+     * Since the rows being drawn are rectangle sprites, you can set to an odd or even property
+     * all styles that apply to {@link Ext.draw.Sprite}. For more information on all the style
+     * properties you can set please take a look at {@link Ext.draw.Sprite}. Some useful style properties are `opacity`, `fill`, `stroke`, `stroke-width`, etc.
+     *
+     * The possible values for a grid option are then *true*, *false*, or an object with `{ odd, even }` properties
+     * where each property contains a sprite style descriptor object that is defined in {@link Ext.draw.Sprite}.
+     *
+     * For example:
+     *
+     *     axes: [{
+     *         type: 'Numeric',
+     *         grid: true,
+     *         position: 'left',
+     *         fields: ['data1', 'data2', 'data3'],
+     *         title: 'Number of Hits',
+     *         grid: {
+     *             odd: {
+     *                 opacity: 1,
+     *                 fill: '#ddd',
+     *                 stroke: '#bbb',
+     *                 'stroke-width': 1
+     *             }
+     *         }
+     *     }, {
+     *         type: 'Category',
+     *         position: 'bottom',
+     *         fields: ['name'],
+     *         title: 'Month of the Year',
+     *         grid: true
+     *     }]
+     *
+     */
+
+    /**
+     * @cfg {Number} majorTickSteps
      * If `minimum` and `maximum` are specified it forces the number of major ticks to the specified value.
      */
 
     /**
-     * @cfg {Number} minorTickSteps 
+     * @cfg {Number} minorTickSteps
      * The number of small ticks between two major ticks. Default is zero.
      */
 
     /**
-     * @cfg {Number} dashSize 
+     * @cfg {String} title
+     * The title for the Axis
+     */
+
+    //@private force min/max values from store
+    forceMinMax: false,
+
+    /**
+     * @cfg {Number} dashSize
      * The size of the dash marker. Default's 3.
      */
     dashSize: 3,
-    
+
     /**
      * @cfg {String} position
      * Where to set the axis. Available options are `left`, `bottom`, `right`, `top`. Default's `bottom`.
      */
     position: 'bottom',
-    
+
     // @private
     skipFirst: false,
-    
+
     /**
      * @cfg {Number} length
      * Offset axis position. Default's 0.
      */
     length: 0,
-    
+
     /**
      * @cfg {Number} width
      * Offset axis width. Default's 0.
      */
     width: 0,
-    
+
     majorTickSteps: false,
 
     // @private
     applyData: Ext.emptyFn,
 
-    // @private creates a structure with start, end and step points.
-    calcEnds: function() {
+    getRange: function () {
         var me = this,
+            store = me.chart.getChartStore(),
+            fields = me.fields,
+            ln = fields.length,
             math = Math,
             mmax = math.max,
             mmin = math.min,
-            store = me.chart.substore || me.chart.store,
-            series = me.chart.series.items,
-            fields = me.fields,
-            ln = fields.length,
+            aggregate = false,
             min = isNaN(me.minimum) ? Infinity : me.minimum,
             max = isNaN(me.maximum) ? -Infinity : me.maximum,
-            prevMin = me.prevMin,
-            prevMax = me.prevMax,
-            aggregate = false,
-            total = 0,
+            total = 0, i, l, value, values, rec,
             excludes = [],
-            outfrom, outto,
-            i, l, values, rec, out;
+            series = me.chart.series.items;
 
         //if one series is stacked I have to aggregate the values
         //for the scale.
+        // TODO(zhangbei): the code below does not support series that stack on 1 side but non-stacked axis
+        // listed in axis config. For example, a Area series whose axis : ['left', 'bottom'].
+        // Assuming only stack on y-axis.
+        // CHANGED BY Nicolas: I removed the check `me.position == 'left'` and `me.position == 'right'` since 
+        // it was constraining the minmax calculation to y-axis stacked
+        // visualizations.
         for (i = 0, l = series.length; !aggregate && i < l; i++) {
             aggregate = aggregate || series[i].stacked;
             excludes = series[i].__excludes || excludes;
@@ -135,8 +197,8 @@ Ext.define('Ext.chart.axis.Axis', {
                     rec = record.get(fields[i]);
                     values[+(rec > 0)] += math.abs(rec);
                 }
-                max = mmax(max, -values[0], values[1]);
-                min = mmin(min, -values[0], values[1]);
+                max = mmax(max, -values[0], +values[1]);
+                min = mmin(min, -values[0], +values[1]);
             }
             else {
                 for (i = 0; i < ln; i++) {
@@ -144,8 +206,8 @@ Ext.define('Ext.chart.axis.Axis', {
                         continue;
                     }
                     value = record.get(fields[i]);
-                    max = mmax(max, value);
-                    min = mmin(min, value);
+                    max = mmax(max, +value);
+                    min = mmin(min, +value);
                 }
             }
         });
@@ -156,12 +218,41 @@ Ext.define('Ext.chart.axis.Axis', {
             min = me.prevMin || 0;
         }
         //normalize min max for snapEnds.
-        if (min != max && (max != (max >> 0))) {
-            max = (max >> 0) + 1;
+        if (min != max && (max != Math.floor(max))) {
+            max = Math.floor(max) + 1;
         }
+
+        if (!isNaN(me.minimum)) {
+            min = me.minimum;
+        }
+        
+        if (!isNaN(me.maximum)) {
+            max = me.maximum;
+        }
+
+        return {min: min, max: max};
+    },
+
+    // @private creates a structure with start, end and step points.
+    calcEnds: function() {
+        var me = this,
+            fields = me.fields,
+            range = me.getRange(),
+            min = range.min,
+            max = range.max,
+            outfrom, outto, out;
+
         out = Ext.draw.Draw.snapEnds(min, max, me.majorTickSteps !== false ?  (me.majorTickSteps +1) : me.steps);
         outfrom = out.from;
         outto = out.to;
+        if (me.forceMinMax) {
+            if (!isNaN(max)) {
+                out.to = max;
+            }
+            if (!isNaN(min)) {
+                out.from = min;
+            }
+        }
         if (!isNaN(me.maximum)) {
             //TODO(nico) users are responsible for their own minimum/maximum values set.
             //Clipping should be added to remove lines in the chart which are below the axis.
@@ -172,10 +263,10 @@ Ext.define('Ext.chart.axis.Axis', {
             //Clipping should be added to remove lines in the chart which are below the axis.
             out.from = me.minimum;
         }
-        
+
         //Adjust after adjusting minimum and maximum
         out.step = (out.to - out.from) / (outto - outfrom) * out.step;
-        
+
         if (me.adjustMaximumByMajorUnit) {
             out.to += out.step;
         }
@@ -188,7 +279,7 @@ Ext.define('Ext.chart.axis.Axis', {
     },
 
     /**
-     * Renders the axis into the screen and updates it's position.
+     * Renders the axis into the screen and updates its position.
      */
     drawAxis: function (init) {
         var me = this,
@@ -217,7 +308,7 @@ Ext.define('Ext.chart.axis.Axis', {
             dashesX,
             dashesY,
             delta;
-        
+
         //If no steps are specified
         //then don't draw the axis. This generally happens
         //when an empty store.
@@ -237,11 +328,11 @@ Ext.define('Ext.chart.axis.Axis', {
             path = ["M", x, currentY, "l", length, 0];
             trueLength = length - (gutterX * 2);
         }
-        
+
         delta = trueLength / (steps || 1);
         dashesX = Math.max(subDashesX +1, 0);
         dashesY = Math.max(subDashesY +1, 0);
-        if (me.type == 'Numeric') {
+        if (me.type == 'Numeric' || me.type == 'Time') {
             calcLabels = true;
             me.labels = [stepCalcs.from];
         }
@@ -326,7 +417,7 @@ Ext.define('Ext.chart.axis.Axis', {
      */
     drawGrid: function() {
         var me = this,
-            surface = me.chart.surface, 
+            surface = me.chart.surface,
             grid = me.grid,
             odd = grid.odd,
             even = grid.even,
@@ -340,7 +431,7 @@ Ext.define('Ext.chart.axis.Axis', {
             i = 1,
             path = [], styles, lineWidth, dlineWidth,
             oddPath = [], evenPath = [];
-        
+
         if ((gutter[1] !== 0 && (position == 'left' || position == 'right')) ||
             (gutter[0] !== 0 && (position == 'top' || position == 'bottom'))) {
             i = 0;
@@ -355,25 +446,25 @@ Ext.define('Ext.chart.axis.Axis', {
                 lineWidth = (styles.lineWidth || styles['stroke-width'] || 0) / 2;
                 dlineWidth = 2 * lineWidth;
                 if (position == 'left') {
-                    path.push("M", prevPoint[0] + 1 + lineWidth, prevPoint[1] + 0.5 - lineWidth, 
+                    path.push("M", prevPoint[0] + 1 + lineWidth, prevPoint[1] + 0.5 - lineWidth,
                               "L", prevPoint[0] + 1 + width - lineWidth, prevPoint[1] + 0.5 - lineWidth,
                               "L", point[0] + 1 + width - lineWidth, point[1] + 0.5 + lineWidth,
                               "L", point[0] + 1 + lineWidth, point[1] + 0.5 + lineWidth, "Z");
                 }
                 else if (position == 'right') {
-                    path.push("M", prevPoint[0] - lineWidth, prevPoint[1] + 0.5 - lineWidth, 
+                    path.push("M", prevPoint[0] - lineWidth, prevPoint[1] + 0.5 - lineWidth,
                               "L", prevPoint[0] - width + lineWidth, prevPoint[1] + 0.5 - lineWidth,
                               "L", point[0] - width + lineWidth, point[1] + 0.5 + lineWidth,
                               "L", point[0] - lineWidth, point[1] + 0.5 + lineWidth, "Z");
                 }
                 else if (position == 'top') {
-                    path.push("M", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] + 1 + lineWidth, 
+                    path.push("M", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] + 1 + lineWidth,
                               "L", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] + 1 + width - lineWidth,
                               "L", point[0] + 0.5 - lineWidth, point[1] + 1 + width - lineWidth,
                               "L", point[0] + 0.5 - lineWidth, point[1] + 1 + lineWidth, "Z");
                 }
                 else {
-                    path.push("M", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] - lineWidth, 
+                    path.push("M", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] - lineWidth,
                             "L", prevPoint[0] + 0.5 + lineWidth, prevPoint[1] - width + lineWidth,
                             "L", point[0] + 0.5 - lineWidth, point[1] - width + lineWidth,
                             "L", point[0] + 0.5 - lineWidth, point[1] - lineWidth, "Z");
@@ -412,7 +503,7 @@ Ext.define('Ext.chart.axis.Axis', {
                         type: 'path',
                         path: evenPath
                     });
-                } 
+                }
                 me.gridEven.setAttributes(Ext.apply({
                     path: evenPath,
                     hidden: false
@@ -469,8 +560,8 @@ Ext.define('Ext.chart.axis.Axis', {
         if (me.label.rotation) {
             textLabel.setAttributes({
                 rotation: {
-                    degrees: 0    
-                }    
+                    degrees: 0
+                }
             }, true);
             textLabel._ubbox = textLabel.getBBox();
             textLabel.setAttributes(me.label, true);
@@ -479,7 +570,7 @@ Ext.define('Ext.chart.axis.Axis', {
         }
         return textLabel;
     },
-    
+
     rect2pointArray: function(sprite) {
         var surface = this.chart.surface,
             rect = surface.getBBox(sprite, true),
@@ -495,24 +586,24 @@ Ext.define('Ext.chart.axis.Axis', {
         //transform the points
         p1[0] = matrix.x.apply(matrix, p1p);
         p1[1] = matrix.y.apply(matrix, p1p);
-        
+
         p2[0] = matrix.x.apply(matrix, p2p);
         p2[1] = matrix.y.apply(matrix, p2p);
-        
+
         p3[0] = matrix.x.apply(matrix, p3p);
         p3[1] = matrix.y.apply(matrix, p3p);
-        
+
         p4[0] = matrix.x.apply(matrix, p4p);
         p4[1] = matrix.y.apply(matrix, p4p);
         return [p1, p2, p3, p4];
     },
-    
+
     intersect: function(l1, l2) {
         var r1 = this.rect2pointArray(l1),
             r2 = this.rect2pointArray(l2);
         return !!Ext.draw.Draw.intersect(r1, r2).length;
     },
-    
+
     drawHorizontalLabels: function() {
        var  me = this,
             labelConf = me.label,
@@ -536,8 +627,8 @@ Ext.define('Ext.chart.axis.Axis', {
         //get a reference to the first text label dimensions
         point = inflections[0];
         firstLabel = me.getOrCreateLabel(0, me.label.renderer(labels[0]));
-        ratio = Math.abs(Math.sin(labelConf.rotate && (labelConf.rotate.degrees * Math.PI / 180) || 0)) >> 0;
-        
+        ratio = Math.floor(Math.abs(Math.sin(labelConf.rotate && (labelConf.rotate.degrees * Math.PI / 180) || 0)));
+
         for (i = 0; i < ln; i++) {
             point = inflections[i];
             text = me.label.renderer(labels[i]);
@@ -559,7 +650,7 @@ Ext.define('Ext.chart.axis.Axis', {
             else {
                 y = point[1] + (me.dashSize * 2) + me.label.padding + (bbox.height / 2);
             }
-            
+
             textLabel.setAttributes({
                 hidden: false,
                 x: x,
@@ -572,13 +663,13 @@ Ext.define('Ext.chart.axis.Axis', {
                 textLabel.hide(true);
                 continue;
             }
-            
+
             prevLabel = textLabel;
         }
 
         return maxHeight;
     },
-    
+
     drawVerticalLabels: function() {
         var me = this,
             inflections = me.inflections,
@@ -602,7 +693,7 @@ Ext.define('Ext.chart.axis.Axis', {
             text = me.label.renderer(labels[i]);
             textLabel = me.getOrCreateLabel(i, text);
             bbox = textLabel._bbox;
-            
+
             maxWidth = max(maxWidth, bbox.width + me.dashSize + me.label.padding);
             y = point[1];
             if (gutterY < bbox.height / 2) {
@@ -618,7 +709,7 @@ Ext.define('Ext.chart.axis.Axis', {
             }
             else {
                 x = point[0] + me.dashSize + me.label.padding + 2;
-            }    
+            }
             textLabel.setAttributes(Ext.apply({
                 hidden: false,
                 x: x,
@@ -631,7 +722,7 @@ Ext.define('Ext.chart.axis.Axis', {
             }
             prevLabel = textLabel;
         }
-        
+
         return maxWidth;
     },
 
@@ -648,7 +739,7 @@ Ext.define('Ext.chart.axis.Axis', {
             ln, i;
 
         if (position == 'left' || position == 'right') {
-            maxWidth = me.drawVerticalLabels();    
+            maxWidth = me.drawVerticalLabels();
         } else {
             maxHeight = me.drawHorizontalLabels();
         }
@@ -760,3 +851,4 @@ Ext.define('Ext.chart.axis.Axis', {
         }, true);
     }
 });
+

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @private
  * @class Ext.layout.component.field.TextArea
@@ -17,7 +31,7 @@ Ext.define('Ext.layout.component.field.TextArea', {
      * textfield layout's implementation to handle height rather than width.
      * @param {Number} width The bodyEl width
      * @param {Number} height The bodyEl height
-     * @return {Array} [inputElWidth, inputElHeight]
+     * @return {Number[]} [inputElWidth, inputElHeight]
      */
     adjustForGrow: function(width, height) {
         var me = this,

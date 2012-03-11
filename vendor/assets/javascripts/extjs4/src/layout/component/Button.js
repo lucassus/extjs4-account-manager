@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * Component layout for buttons
  * @class Ext.layout.component.Button
@@ -34,6 +48,8 @@ Ext.define('Ext.layout.component.Button', {
             ownerEl = owner.el,
             btnEl = owner.btnEl,
             btnInnerEl = owner.btnInnerEl,
+            btnIconEl = owner.btnIconEl,
+            sizeIconEl = (owner.icon || owner.iconCls) && (owner.iconAlign == "top" || owner.iconAlign == "bottom"),
             minWidth = owner.minWidth,
             maxWidth = owner.maxWidth,
             ownerWidth, btnFrameWidth, metrics;
@@ -48,17 +64,22 @@ Ext.define('Ext.layout.component.Button', {
             // In IE7 strict mode button elements with width:auto get strange extra side margins within
             // the wrapping table cell, but they go away if the width is explicitly set. So we measure
             // the size of the text and set the width to match.
-            if (owner.text && Ext.isIE7 && Ext.isStrict && btnEl && btnEl.getWidth() > 20) {
+            if (owner.text && (Ext.isIE6 || Ext.isIE7) && Ext.isStrict && btnEl && btnEl.getWidth() > 20) {
                 btnFrameWidth = me.btnFrameWidth;
                 metrics = Ext.util.TextMetrics.measure(btnInnerEl, owner.text);
                 ownerEl.setWidth(metrics.width + btnFrameWidth + me.adjWidth);
                 btnEl.setWidth(metrics.width + btnFrameWidth);
                 btnInnerEl.setWidth(metrics.width + btnFrameWidth);
+
+                if (sizeIconEl) {
+                    btnIconEl.setWidth(metrics.width + btnFrameWidth);
+                }
             } else {
                 // Remove any previous fixed widths
                 ownerEl.setWidth(null);
                 btnEl.setWidth(null);
                 btnInnerEl.setWidth(null);
+                btnIconEl.setWidth(null);
             }
 
             // Handle maxWidth/minWidth config
@@ -91,7 +112,7 @@ Ext.define('Ext.layout.component.Button', {
         me.callParent(arguments);
         me.setElementSize(owner.btnEl, btnWidth, btnHeight);
         me.setElementSize(btnInnerEl, btnWidth, btnHeight);
-        if (isNum(btnHeight)) {
+        if (btnHeight >= 0) {
             btnInnerEl.setStyle('line-height', btnHeight - btnFrameHeight + 'px');
         }
 

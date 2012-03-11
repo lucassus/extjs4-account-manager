@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.HasManyAssociation
@@ -35,7 +49,7 @@ Ext.define('User', {
  * 
 <pre><code>
 //first, we load up a User with id of 1
-var user = Ext.ModelManager.create({id: 1, name: 'Ed'}, 'User');
+var user = Ext.create('User', {id: 1, name: 'Ed'});
 
 //the user.products function was created automatically by the association and returns a {@link Ext.data.Store Store}
 //the created store is automatically scoped to the set of Products for the User with id of 1
@@ -91,7 +105,7 @@ var store = new Search({query: 'Sencha Touch'}).tweets();
  * equivalent to this:</p>
  * 
 <pre><code>
-var store = new Ext.data.Store({
+var store = Ext.create('Ext.data.Store', {
     model: 'Tweet',
     filters: [
         {

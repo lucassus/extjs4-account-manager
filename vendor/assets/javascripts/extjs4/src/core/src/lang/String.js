@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.String
  *
@@ -12,9 +26,10 @@ Ext.String = {
     escapeRegexRe: /([-.*+?^${}()|[\]\/\\])/g,
 
     /**
-     * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
+     * Convert certain characters (&, <, >, and ") to their HTML character equivalents for literal display in web pages.
      * @param {String} value The string to encode
      * @return {String} The encoded text
+     * @method
      */
     htmlEncode: (function() {
         var entities = {
@@ -38,9 +53,10 @@ Ext.String = {
     })(),
 
     /**
-     * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
+     * Convert certain characters (&, <, >, and ") from their HTML character equivalents.
      * @param {String} value The string to decode
      * @return {String} The decoded text
+     * @method
      */
     htmlDecode: (function() {
         var entities = {
@@ -205,5 +221,24 @@ var s = Ext.String.format('&lt;div class="{0}">{1}&lt;/div>', cls, text);
         return format.replace(Ext.String.formatRe, function(m, i) {
             return args[i];
         });
+    },
+
+    /**
+     * Returns a string with a specified number of repititions a given string pattern.
+     * The pattern be separated by a different string.
+     *
+     *      var s = Ext.String.repeat('---', 4); // = '------------'
+     *      var t = Ext.String.repeat('--', 3, '/'); // = '--/--/--'
+     *
+     * @param {String} pattern The pattern to repeat.
+     * @param {Number} count The number of times to repeat the pattern (may be 0).
+     * @param {String} sep An option string to separate each pattern.
+     */
+    repeat: function(pattern, count, sep) {
+        for (var buf = [], i = count; i--; ) {
+            buf.push(pattern);
+        }
+        return buf.join(sep || '');
     }
 };
+

@@ -12,5 +12,7 @@ Ext.application({
 
   appFolder: '/assets/app',
 
-  controllers: ['Users']
+  controllers: ['Users'],
+
+  autoCreateViewport: true,
 });

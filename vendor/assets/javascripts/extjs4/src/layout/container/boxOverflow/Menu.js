@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.layout.container.boxOverflow.Menu
  * @extends Ext.layout.container.boxOverflow.None
@@ -41,6 +55,10 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
          * Array of all items that are currently hidden and should go into the dropdown menu
          */
         me.menuItems = [];
+    },
+    
+    onRemove: function(comp){
+        Ext.Array.remove(this.menuItems, comp);
     },
 
     handleOverflow: function(calculations, targetSize) {
@@ -102,7 +120,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * @private
      */
     hideTrigger: function() {
-        if (this.menuTrigger != undefined) {
+        if (this.menuTrigger !== undefined) {
             this.menuTrigger.hide();
         }
     },
@@ -256,7 +274,6 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
              * because the container is currently not large enough.
              */
             me.menu = Ext.create('Ext.menu.Menu', {
-                hideMode: 'offsets',
                 listeners: {
                     scope: me,
                     beforeshow: me.beforeMenuShow
@@ -271,7 +288,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
              */
             me.menuTrigger = Ext.create('Ext.button.Button', {
                 ownerCt : me.layout.owner, // To enable the Menu to ascertain a valid zIndexManager owner in the same tree
-                iconCls : Ext.baseCSSPrefix + layout.owner.getXType() + '-more-icon',
+                iconCls : me.layout.owner.menuTriggerCls,
                 ui      : layout.owner instanceof Ext.toolbar.Toolbar ? 'default-toolbar' : 'default',
                 menu    : me.menu,
                 getSplitCls: function() { return '';},
@@ -297,7 +314,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * @private
      * Creates the beforeCt, innerCt and afterCt elements if they have not already been created
      * @param {Ext.container.Container} container The Container attached to this Layout instance
-     * @param {Ext.core.Element} target The target Element
+     * @param {Ext.Element} target The target Element
      */
     createInnerElements: function() {
         var me = this,

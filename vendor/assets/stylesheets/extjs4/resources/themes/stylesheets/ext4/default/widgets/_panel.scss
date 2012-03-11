@@ -9,8 +9,8 @@
         position: relative;
     }
     
-    // Workaround for disappearing right edge in IE6
      @if $include-ie {
+        // Workaround for disappearing right edge in IE6
         .#{$prefix}ie {
             .#{$prefix}panel-header,
             .#{$prefix}panel-header-tl,
@@ -23,6 +23,12 @@
             .#{$prefix}panel-header-bc,
             .#{$prefix}panel-header-br {
                 zoom: 1;
+            }
+        }
+        // Fix for IE8 clipping. EXTJSIV-1553
+        .#{$prefix}ie8 {
+            td.#{$prefix}frame-mc {
+                vertical-align: top;
             }
         }
     }
@@ -77,6 +83,12 @@
         display: -moz-inline-stack;
         display: inline-block;
     }
+    
+    .#{$prefix}panel-header-text-container {
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+    }
 
     .#{$prefix}panel-header-text {
         @include no-select;
@@ -94,6 +106,8 @@
     .#{$prefix}panel-body {
         overflow: hidden;
         position: relative;
+        
+        font-size: $panel-body-font-size;
     }
 
     .#{$prefix}panel-header-vertical {
@@ -137,7 +151,9 @@
             'default',
 
             $ui-base-color: $panel-base-color,
+            $ui-border-width: $panel-border-width,
             $ui-border-color: $panel-border-color,
+            $ui-border-radius: $panel-border-radius,
             
             $ui-header-color: $panel-header-color,
             $ui-header-font-size: $panel-header-font-size,
@@ -253,19 +269,19 @@
     @if $ui-header-background-color != null and $ui-header-background-gradient != null {
         @if not $supports-gradients or $compile-all {
             .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-top {
-                background-image: theme-image($theme-name, 'panel-header/panel-header-#{$ui-label}-top-bg.gif');
+                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-top-bg.gif');
             }
             
             .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-bottom {
-                background-image: theme-image($theme-name, 'panel-header/panel-header-#{$ui-label}-bottom-bg.gif');
+                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-bottom-bg.gif');
             }
 
             .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-left {
-                background-image: theme-image($theme-name, 'panel-header/panel-header-#{$ui-label}-left-bg.gif');
+                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-left-bg.gif');
             }
 
             .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
-                background-image: theme-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg.gif');
+                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg.gif');
             }
         }
     }
@@ -309,26 +325,6 @@
             .#{$prefix}panel-header-#{$ui-label}-left,
             .#{$prefix}panel-header-#{$ui-label}-right {
                 @include background-gradient($ui-header-background-color, $ui-header-background-gradient, right);
-            }
-        }
-    }
-
-    // TODO: Fix this genocide of Sass.
-    // and window stuff in here, wtf?
-    @if $include-webkit {
-        .#{$prefix}webkit {
-            #{$prefix}panel-ghost > div.#{$prefix}panel-body-#{$ui-label},
-            #{$prefix}panel-ghost > div.#{$prefix}window-body-#{$ui-label} {
-                background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, from(white), color-stop(0.02, #E5ECF7), to(#B7CBE7));
-            }
-        }
-    }
-
-    @if $include-ff {
-        .#{$prefix}gecko {
-            .#{$prefix}panel-ghost > div.#{$prefix}panel-body-#{$ui-label},
-            .#{$prefix}panel-ghost > div.#{$prefix}window-body-#{$ui-label} {
-                background-image: -moz-linear-gradient(#FFFFFF, #E5ECF7 2%, #B7CBE7);
             }
         }
     }

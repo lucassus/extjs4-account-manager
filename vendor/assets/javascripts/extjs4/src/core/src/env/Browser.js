@@ -1,23 +1,33 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.env.Browser
- * @extends Ext.Base
- * Provide useful information about the current browser.
- * Should not be manually instantiated unless for unit-testing; access the global instance stored in Ext.browser instead. Example:
- * <pre><code>
- * if (Ext.browser.is.IE) {
- *      // IE specific code here
- * }
+ * Provides useful information about the current browser.
+ * Should not be manually instantiated unless for unit-testing; access the global instance
+ * stored in {@link Ext#browser} instead. Example:
  *
- * if (Ext.browser.is.WebKit) {
- *      // WebKit specific code here
- * }
+ *     if (Ext.browser.is.IE) {
+ *          // IE specific code here
+ *     }
  *
- * console.log("Version " + Ext.browser.version);
- * </code></pre>
+ *     if (Ext.browser.is.WebKit) {
+ *          // WebKit specific code here
+ *     }
+ *
+ *     console.log("Version " + Ext.browser.version);
  *
  * For a full list of supported values, refer to: {@link Ext.env.Browser#is}
- *
- * @borrows Ext.Base.extend
  */
 Ext.define('Ext.env.Browser', {
     statics: {
@@ -52,32 +62,29 @@ Ext.define('Ext.env.Browser', {
     },
 
     /**
+     * @property {Boolean} isSecure
      * True if the page is running over SSL
-     * @type Boolean
      */
     isSecure: false,
 
     /**
+     * @property {Boolean} isStrict
      * True if the document is in strict mode
-     * @type Boolean
      */
     isStrict: false,
 
     /**
      * A "hybrid" property, can be either accessed as a method call, i.e:
-     * <pre><code>
-     * if (Ext.browser.is('IE')) { ... }
-     * </code></pre>
+     *
+     *     if (Ext.browser.is('IE')) { ... }
      *
      * or as an object with boolean properties, i.e:
-     * <pre><code>
-     * if (Ext.browser.is.IE) { ... }
-     * </code></pre>
+     *
+     *     if (Ext.browser.is.IE) { ... }
      *
      * Versions can be conveniently checked as well. For example:
-     * <pre><code>
-     * if (Ext.browser.is.IE6) { ... } // Equivalent to (Ext.browser.is.IE && Ext.browser.version.equals(6))
-     * </code></pre>
+     *
+     *     if (Ext.browser.is.IE6) { ... } // Equivalent to (Ext.browser.is.IE && Ext.browser.version.equals(6))
      *
      * Note that only {@link Ext.Version#getMajor major component}  and {@link Ext.Version#getShortVersion shortVersion}
      * value of the version are available via direct property checking.
@@ -86,32 +93,33 @@ Ext.define('Ext.env.Browser', {
      *
      * @param {String} value The OS name to check
      * @return {Boolean}
+     * @method
      */
     is: Ext.emptyFn,
 
     /**
+     * @property {String} name
      * Read-only - the full name of the current browser
      * Possible values are: IE, Firefox, Safari, Chrome, Opera and Other
-     * @type String
      */
     name: null,
 
     /**
+     * @property {Ext.Version} version
      * Read-only, refer to {@link Ext.Version}
-     * @type Ext.Version
      */
     version: null,
 
     /**
+     * @property {String} engineName
      * Read-only - the full name of the current browser's engine
      * Possible values are: WebKit, Gecko, Presto, Trident and Other
-     * @type String
      */
     engineName: null,
 
     /**
+     * @property {String} engineVersion
      * Read-only, refer to {@link Ext.Version}
-     * @type Ext.Version
      */
     engineVersion: null,
 
@@ -170,6 +178,12 @@ Ext.define('Ext.env.Browser', {
 
 }, function() {
 
+    /**
+     * @property {Ext.env.Browser} browser
+     * @member Ext
+     * Global convenient instance of {@link Ext.env.Browser}.
+     */
     Ext.browser = new Ext.env.Browser();
 
 });
+

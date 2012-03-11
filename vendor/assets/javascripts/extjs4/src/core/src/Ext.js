@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext
  * @singleton
@@ -5,7 +19,7 @@
 (function() {
     var global = this,
         objectPrototype = Object.prototype,
-        toString = Object.prototype.toString,
+        toString = objectPrototype.toString,
         enumerables = true,
         enumerablesTest = { toString: 1 },
         i;
@@ -27,7 +41,7 @@
 
     /**
      * An array containing extra enumerables for old browsers
-     * @type Array
+     * @property {String[]}
      */
     Ext.enumerables = enumerables;
 
@@ -80,7 +94,6 @@
 
         /**
          * Copies all the properties of config to object if they don't already exist.
-         * @function
          * @param {Object} object The receiver of the properties
          * @param {Object} config The source of the properties
          * @return {Object} returns obj
@@ -133,7 +146,7 @@
 
         /**
          * This method deprecated. Use {@link Ext#define Ext.define} instead.
-         * @function
+         * @method
          * @param {Function} superclass
          * @param {Object} overrides
          * @return {Function} The subclass constructor from the <tt>overrides</tt> parameter, or a generated one if not provided.
@@ -247,10 +260,10 @@
          * Returns the given value itself if it's not empty, as described in {@link Ext#isEmpty}; returns the default
          * value (second argument) otherwise.
          *
-         * @param {Mixed} value The value to test
-         * @param {Mixed} defaultValue The value to return if the original value is empty
+         * @param {Object} value The value to test
+         * @param {Object} defaultValue The value to return if the original value is empty
          * @param {Boolean} allowBlank (optional) true to allow zero length strings to qualify as non-empty (defaults to false)
-         * @return {Mixed} value, if non-empty, else defaultValue
+         * @return {Object} value, if non-empty, else defaultValue
          */
         valueFrom: function(value, defaultValue, allowBlank){
             return Ext.isEmpty(value, allowBlank) ? defaultValue : value;
@@ -273,7 +286,7 @@
          * - `textnode`: If the given value is a DOM text node and contains something other than whitespace
          * - `whitespace`: If the given value is a DOM text node and contains only whitespace
          *
-         * @param {Mixed} value
+         * @param {Object} value
          * @return {String}
          * @markdown
          */
@@ -337,7 +350,7 @@
          * - a zero-length array
          * - a zero-length string (Unless the `allowEmptyString` parameter is set to `true`)
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @param {Boolean} allowEmptyString (optional) true to allow empty strings (defaults to false)
          * @return {Boolean}
          * @markdown
@@ -349,8 +362,9 @@
         /**
          * Returns true if the passed value is a JavaScript Array, false otherwise.
          *
-         * @param {Mixed} target The target to test
+         * @param {Object} target The target to test
          * @return {Boolean}
+         * @method
          */
         isArray: ('isArray' in Array) ? Array.isArray : function(value) {
             return toString.call(value) === '[object Array]';
@@ -367,12 +381,14 @@
 
         /**
          * Returns true if the passed value is a JavaScript Object, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
+         * @method
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
-            return value !== null && value !== undefined && toString.call(value) === '[object Object]' && value.nodeType === undefined;
+            // check ownerDocument here as well to exclude DOM nodes
+            return value !== null && value !== undefined && toString.call(value) === '[object Object]' && value.ownerDocument === undefined;
         } :
         function(value) {
             return toString.call(value) === '[object Object]';
@@ -380,7 +396,7 @@
 
         /**
          * Returns true if the passed value is a JavaScript 'primitive', a string, number or boolean.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isPrimitive: function(value) {
@@ -391,8 +407,9 @@
 
         /**
          * Returns true if the passed value is a JavaScript Function, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
+         * @method
          */
         isFunction:
         // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back to using
@@ -405,7 +422,7 @@
 
         /**
          * Returns true if the passed value is a number. Returns false for non-finite numbers.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isNumber: function(value) {
@@ -414,7 +431,7 @@
 
         /**
          * Validates that a value is numeric.
-         * @param {Mixed} value Examples: 1, '1', '2.34'
+         * @param {Object} value Examples: 1, '1', '2.34'
          * @return {Boolean} True if numeric, false otherwise
          */
         isNumeric: function(value) {
@@ -423,7 +440,7 @@
 
         /**
          * Returns true if the passed value is a string.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isString: function(value) {
@@ -433,7 +450,7 @@
         /**
          * Returns true if the passed value is a boolean.
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isBoolean: function(value) {
@@ -442,16 +459,16 @@
 
         /**
          * Returns true if the passed value is an HTMLElement
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isElement: function(value) {
-            return value ? value.nodeType !== undefined : false;
+            return value ? value.nodeType === 1 : false;
         },
 
         /**
          * Returns true if the passed value is a TextNode
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isTextNode: function(value) {
@@ -460,7 +477,7 @@
 
         /**
          * Returns true if the passed value is defined.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isDefined: function(value) {
@@ -469,7 +486,7 @@
 
         /**
          * Returns true if the passed value is iterable, false otherwise
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isIterable: function(value) {
@@ -481,8 +498,8 @@
 
         /**
          * Clone almost any type of variable including array, object, DOM nodes and Date without keeping the old reference
-         * @param {Mixed} item The variable to clone
-         * @return {Mixed} clone
+         * @param {Object} item The variable to clone
+         * @return {Object} clone
          */
         clone: function(item) {
             if (item === null || item === undefined) {
@@ -545,7 +562,7 @@
                 var i = 0;
 
                 do {
-                    uniqueGlobalNamespace = 'ExtSandbox' + (++i);
+                    uniqueGlobalNamespace = 'ExtBox' + (++i);
                 } while (Ext.global[uniqueGlobalNamespace] !== undefined);
 
                 Ext.global[uniqueGlobalNamespace] = Ext;
@@ -573,7 +590,10 @@
     /**
      * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
+     * @method
+     * @alias Ext#typeOf
      */
     Ext.type = Ext.typeOf;
 
 })();
+

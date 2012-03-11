@@ -1,35 +1,50 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.fx.Anim
- * 
+ *
  * This class manages animation for a specific {@link #target}. The animation allows
  * animation of various properties on the target, such as size, position, color and others.
- * 
+ *
  * ## Starting Conditions
  * The starting conditions for the animation are provided by the {@link #from} configuration.
  * Any/all of the properties in the {@link #from} configuration can be specified. If a particular
  * property is not defined, the starting value for that property will be read directly from the target.
- * 
+ *
  * ## End Conditions
  * The ending conditions for the animation are provided by the {@link #to} configuration. These mark
  * the final values once the animations has finished. The values in the {@link #from} can mirror
  * those in the {@link #to} configuration to provide a starting point.
- * 
+ *
  * ## Other Options
  *  - {@link #duration}: Specifies the time period of the animation.
  *  - {@link #easing}: Specifies the easing of the animation.
  *  - {@link #iterations}: Allows the animation to repeat a number of times.
  *  - {@link #alternate}: Used in conjunction with {@link #iterations}, reverses the direction every second iteration.
- * 
+ *
  * ## Example Code
- * 
+ *
+ *     @example
  *     var myComponent = Ext.create('Ext.Component', {
  *         renderTo: document.body,
  *         width: 200,
  *         height: 200,
  *         style: 'border: 1px solid red;'
  *     });
- *     
- *     new Ext.fx.Anim({
+ *
+ *     Ext.create('Ext.fx.Anim', {
  *         target: myComponent,
  *         duration: 1000,
  *         from: {
@@ -54,6 +69,17 @@ Ext.define('Ext.fx.Anim', {
     /* End Definitions */
 
     isAnimation: true,
+
+    /**
+     * @cfg {Function} callback
+     * A function to be run after the animation has completed.
+     */
+
+    /**
+     * @cfg {Function} scope
+     * The scope that the {@link #callback} function will be called with
+     */
+
     /**
      * @cfg {Number} duration
      * Time in milliseconds for a single animation to last. Defaults to 250. If the {@link #iterations} property is
@@ -79,7 +105,7 @@ Ext.define('Ext.fx.Anim', {
     /**
      * @cfg {String} easing
 This describes how the intermediate values used during a transition will be calculated. It allows for a transition to change
-speed over its duration. 
+speed over its duration.
 
          -backIn
          -backOut
@@ -93,8 +119,12 @@ speed over its duration.
          -elasticOut
          -cubic-bezier(x1, y1, x2, y2)
 
-Note that cubic-bezier will create a custom easing curve following the CSS3 transition-timing-function specification `{@link http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag}`. The four values specify points P1 and P2 of the curve
-as (x1, y1, x2, y2). All values must be in the range [0, 1] or the definition is invalid.
+Note that cubic-bezier will create a custom easing curve following the CSS3 [transition-timing-function][0]
+specification.  The four values specify points P1 and P2 of the curve as (x1, y1, x2, y2). All values must
+be in the range [0, 1] or the definition is invalid.
+
+[0]: http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
+
      * @markdown
      */
     easing: 'ease',
@@ -144,7 +174,7 @@ keyframes : {
     /**
      * Flag to determine if the animation has started
      * @property running
-     * @type boolean
+     * @type Boolean
      */
     running: false,
 
@@ -152,13 +182,13 @@ keyframes : {
      * Flag to determine if the animation is paused. Only set this to true if you need to
      * keep the Anim instance around to be unpaused later; otherwise call {@link #end}.
      * @property paused
-     * @type boolean
+     * @type Boolean
      */
     paused: false,
 
     /**
      * Number of times to execute the animation. Defaults to 1.
-     * @cfg {int} iterations
+     * @cfg {Number} iterations
      */
     iterations: 1,
 
@@ -172,7 +202,7 @@ keyframes : {
     /**
      * Current iteration the animation is running.
      * @property currentIteration
-     * @type int
+     * @type Number
      */
     currentIteration: 0,
 
@@ -225,7 +255,9 @@ from : {
 
     // @private
     constructor: function(config) {
-        var me = this;
+        var me = this,
+            curve;
+            
         config = config || {};
         // If keyframes are passed, they really want an Animator instead.
         if (config.keyframes) {
@@ -245,8 +277,8 @@ from : {
         if (!me.easingFn) {
             me.easingFn = String(me.easing).match(me.bezierRE);
             if (me.easingFn && me.easingFn.length == 5) {
-                var curve = me.easingFn;
-                me.easingFn = Ext.fx.cubicBezier(+curve[1], +curve[2], +curve[3], +curve[4]);
+                curve = me.easingFn;
+                me.easingFn = Ext.fx.CubicBezier.cubicBezier(+curve[1], +curve[2], +curve[3], +curve[4]);
             }
         }
         me.id = Ext.id(null, 'ext-anim-');
@@ -288,7 +320,7 @@ from : {
         return Ext.fx.Manager.items.get(this.id).setAttr(this.target, attr, value);
     },
 
-    /*
+    /**
      * @private
      * Set up the initial currentAttrs hash.
      */
@@ -322,7 +354,7 @@ from : {
         me.currentAttrs = out;
     },
 
-    /*
+    /**
      * @private
      * Fires beforeanimate and sets the running flag.
      */
@@ -356,7 +388,7 @@ from : {
         }
     },
 
-    /*
+    /**
      * @private
      * Calculate attribute value at the passed timestamp.
      * @returns a hash of the new attributes.
@@ -388,7 +420,7 @@ from : {
         return ret;
     },
 
-    /*
+    /**
      * @private
      * Perform lastFrame cleanup and handle iterations
      * @returns a hash of the new attributes.
@@ -415,7 +447,7 @@ from : {
         }
     },
 
-    /*
+    /**
      * Fire afteranimate event and end the animation. Usually called automatically when the
      * animation reaches its final frame, but can also be called manually to pre-emptively
      * stop and destroy the running animation.
@@ -431,3 +463,4 @@ from : {
 });
 // Set flag to indicate that Fx is available. Class might not be available immediately.
 Ext.enableFx = true;
+

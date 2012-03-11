@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.direct.JsonProvider
  * @extends Ext.direct.Provider
@@ -10,17 +24,17 @@ and should not be instanced directly.
  */
 
 Ext.define('Ext.direct.JsonProvider', {
-    
+
     /* Begin Definitions */
-    
+
     extend: 'Ext.direct.Provider',
-    
+
     alias: 'direct.jsonprovider',
-    
+
     uses: ['Ext.direct.ExceptionEvent'],
-    
+
     /* End Definitions */
-   
+
    /**
     * Parse the JSON response
     * @private
@@ -41,7 +55,7 @@ Ext.define('Ext.direct.JsonProvider', {
      * Creates a set of events based on the XHR response
      * @private
      * @param {Object} response The XHR response
-     * @return {Array} An array of Ext.direct.Event
+     * @return {Ext.direct.Event[]} An array of Ext.direct.Event
      */
     createEvents: function(response){
         var data = null,
@@ -49,7 +63,7 @@ Ext.define('Ext.direct.JsonProvider', {
             event,
             i = 0,
             len;
-            
+
         try{
             data = this.parseResponse(response);
         } catch(e) {
@@ -61,7 +75,7 @@ Ext.define('Ext.direct.JsonProvider', {
             });
             return [event];
         }
-        
+
         if (Ext.isArray(data)) {
             for (len = data.length; i < len; ++i) {
                 events.push(this.createEvent(data[i]));
@@ -71,7 +85,7 @@ Ext.define('Ext.direct.JsonProvider', {
         }
         return events;
     },
-    
+
     /**
      * Create an event from a response object
      * @param {Object} response The XHR response object

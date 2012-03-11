@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.direct.RemotingProvider
  * @extends Ext.direct.JsonProvider
@@ -89,7 +103,7 @@ TestAction.multiply(
     
     /**
      * @cfg {String} url
-     * <b>Required<b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
+     * <b>Required</b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
      */
     
     /**
@@ -102,7 +116,7 @@ TestAction.multiply(
      * @cfg {Number/Boolean} enableBuffer
      * <p><tt>true</tt> or <tt>false</tt> to enable or disable combining of method
      * calls. If a number is specified this is the amount of time in milliseconds
-     * to wait before sending a batched request (defaults to <tt>10</tt>).</p>
+     * to wait before sending a batched request.</p>
      * <br><p>Calls which are received within the specified timeframe will be
      * concatenated together and sent in a single request, optimizing the
      * application by reducing the amount of round trips that have to be made
@@ -112,13 +126,13 @@ TestAction.multiply(
     
     /**
      * @cfg {Number} maxRetries
-     * Number of times to re-attempt delivery on failure of a call. Defaults to <tt>1</tt>.
+     * Number of times to re-attempt delivery on failure of a call.
      */
     maxRetries: 1,
     
     /**
      * @cfg {Number} timeout
-     * The timeout to use for each request. Defaults to <tt>undefined</tt>.
+     * The timeout to use for each request.
      */
     timeout: undefined,
     
@@ -449,7 +463,7 @@ TestAction.multiply(
      * @param {Object} method The method being executed
      * @param {HTMLElement} form The form being submitted
      * @param {Function} callback (optional) A callback to run after the form submits
-     * @param {Object} scope A scope to execute the callback in
+     * @param {Object} scope (optional) A scope to execute the callback in
      */
     configureFormRequest : function(action, method, form, callback, scope){
         var me = this,
@@ -506,3 +520,4 @@ TestAction.multiply(
     }
     
 });
+

@@ -1,4 +1,18 @@
 /*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
+/*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
  * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
@@ -8,6 +22,7 @@
 
 /**
  * @class Ext.dd.DDProxy
+ * @extends Ext.dd.DD
  * A DragDrop implementation that inserts an empty, bordered div into
  * the document that follows the cursor during drag operations.  At the time of
  * the click, the frame div is resized to the dimensions of the linked html
@@ -16,14 +31,6 @@
  * References to the "frame" element refer to the single proxy element that
  * was created to be dragged in place of all DDProxy elements on the
  * page.
- *
- * @extends Ext.dd.DD
- * @constructor
- * @param {String} id the id of the linked html element
- * @param {String} sGroup the group of related DragDrop objects
- * @param {object} config an object containing configurable attributes
- *                Valid properties for DDProxy in addition to those in DragDrop:
- *                   resizeFrame, centerFrame, dragElId
  */
 Ext.define('Ext.dd.DDProxy', {
     extend: 'Ext.dd.DD',
@@ -31,13 +38,22 @@ Ext.define('Ext.dd.DDProxy', {
     statics: {
         /**
          * The default drag frame div id
-         * @property Ext.dd.DDProxy.dragElId
-         * @type String
          * @static
          */
         dragElId: "ygddfdiv"
     },
 
+    /**
+     * Creates new DDProxy.
+     * @param {String} id the id of the linked html element
+     * @param {String} sGroup the group of related DragDrop objects
+     * @param {Object} config an object containing configurable attributes.
+     * Valid properties for DDProxy in addition to those in DragDrop:
+     * 
+     * - resizeFrame
+     * - centerFrame
+     * - dragElId
+     */
     constructor: function(id, sGroup, config) {
         if (id) {
             this.init(id, sGroup, config);
@@ -50,7 +66,7 @@ Ext.define('Ext.dd.DDProxy', {
      * we want to drag (this is to get the frame effect).  We can turn it off
      * if we want a different behavior.
      * @property resizeFrame
-     * @type boolean
+     * @type Boolean
      */
     resizeFrame: true,
 
@@ -60,7 +76,7 @@ Ext.define('Ext.dd.DDProxy', {
      * you do not have constraints on the obj is to have the drag frame centered
      * around the cursor.  Set centerFrame to true for this effect.
      * @property centerFrame
-     * @type boolean
+     * @type Boolean
      */
     centerFrame: false,
 
@@ -118,8 +134,8 @@ Ext.define('Ext.dd.DDProxy', {
      * Resizes the drag frame to the dimensions of the clicked object, positions
      * it over the object, and finally displays it
      * @method showFrame
-     * @param {int} iPageX X click position
-     * @param {int} iPageY Y click position
+     * @param {Number} iPageX X click position
+     * @param {Number} iPageY Y click position
      * @private
      */
     showFrame: function(iPageX, iPageY) {
@@ -206,3 +222,4 @@ Ext.define('Ext.dd.DDProxy', {
     }
 
 });
+

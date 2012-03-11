@@ -1,12 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.property.Store
  * @extends Ext.data.Store
  * A custom {@link Ext.data.Store} for the {@link Ext.grid.property.Grid}. This class handles the mapping
  * between the custom data source objects supported by the grid and the {@link Ext.grid.property.Property} format
  * used by the {@link Ext.data.Store} base class.
- * @constructor
- * @param {Ext.grid.Grid} grid The grid this store will be bound to
- * @param {Object} source The source data config object
  */
 Ext.define('Ext.grid.property.Store', {
 
@@ -16,13 +27,20 @@ Ext.define('Ext.grid.property.Store', {
 
     uses: ['Ext.data.reader.Reader', 'Ext.data.proxy.Proxy', 'Ext.data.ResultSet', 'Ext.grid.property.Property'],
 
+    /**
+     * Creates new property store.
+     * @param {Ext.grid.Panel} grid The grid this store will be bound to
+     * @param {Object} source The source data config object
+     */
     constructor : function(grid, source){
-        this.grid = grid;
-        this.source = source;
-        this.callParent([{
+        var me = this;
+        
+        me.grid = grid;
+        me.source = source;
+        me.callParent([{
             data: source,
             model: Ext.grid.property.Property,
-            proxy: this.getProxy()
+            proxy: me.getProxy()
         }]);
     },
 
@@ -51,18 +69,21 @@ Ext.define('Ext.grid.property.Store', {
 
                 readRecords: function(dataObject) {
                     var val,
+                        propName,
                         result = {
                             records: [],
                             success: true
                         };
 
-                    for (var propName in dataObject) {
-                        val = dataObject[propName];
-                        if (dataObject.hasOwnProperty(propName) && this.isEditableValue(val)) {
-                            result.records.push(new Ext.grid.property.Property({
-                                name: propName,
-                                value: val
-                            }, propName));
+                    for (propName in dataObject) {
+                        if (dataObject.hasOwnProperty(propName)) {
+                            val = dataObject[propName];
+                            if (this.isEditableValue(val)) {
+                                result.records.push(new Ext.grid.property.Property({
+                                    name: propName,
+                                    value: val
+                                }, propName));
+                            }
                         }
                     }
                     result.total = result.count = result.records.length;
@@ -93,35 +114,37 @@ Ext.define('Ext.grid.property.Store', {
 
     // private
     getProperty : function(row) {
-       return Ext.isNumber(row) ? this.store.getAt(row) : this.store.getById(row);
+       return Ext.isNumber(row) ? this.getAt(row) : this.getById(row);
     },
 
     // private
     setValue : function(prop, value, create){
-        var r = this.getRec(prop);
-        if (r) {
-            r.set('value', value);
-            this.source[prop] = value;
+        var me = this,
+            rec = me.getRec(prop);
+            
+        if (rec) {
+            rec.set('value', value);
+            me.source[prop] = value;
         } else if (create) {
             // only create if specified.
-            this.source[prop] = value;
-            r = new Ext.grid.property.Property({name: prop, value: value}, prop);
-            this.store.add(r);
+            me.source[prop] = value;
+            rec = new Ext.grid.property.Property({name: prop, value: value}, prop);
+            me.add(rec);
         }
     },
 
     // private
     remove : function(prop) {
-        var r = this.getRec(prop);
-        if(r) {
-            this.store.remove(r);
+        var rec = this.getRec(prop);
+        if (rec) {
+            this.callParent([rec]);
             delete this.source[prop];
         }
     },
 
     // private
     getRec : function(prop) {
-        return this.store.getById(prop);
+        return this.getById(prop);
     },
 
     // protected - should only be called by the grid.  Use grid.getSource instead.

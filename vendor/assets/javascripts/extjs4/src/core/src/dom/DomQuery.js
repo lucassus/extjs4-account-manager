@@ -1,4 +1,18 @@
 /*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
+/*
  * This is code is also distributed under MIT license for use
  * with jQuery and prototype JavaScript libraries.
  */
@@ -77,6 +91,7 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         tagTokenRe = /^(#)?([\w-\*]+)/,
         nthRe = /(\d*)n\+?(\d*)/,
         nthRe2 = /\D/,
+        startIdRe = /^\s*\#/,
         // This is for IE MSXML which does not support expandos.
     // IE runs the same speed using setAttribute, however FF slows way down
     // and Safari completely fails so they need to continue to use expandos.
@@ -523,10 +538,13 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         },
 
         /**
-         * Selects a group of elements.
+         * Selects an array of DOM nodes using JavaScript-only implementation.
+         *
+         * Use {@link #select} to take advantage of browsers built-in support for CSS selectors.
+         *
          * @param {String} selector The selector/xpath query (can be a comma separated list of selectors)
-         * @param {Node/String} root (optional) The start of the query (defaults to document).
-         * @return {Array} An Array of DOM elements which match the selector. If there are
+         * @param {HTMLElement/String} root (optional) The start of the query (defaults to document).
+         * @return {HTMLElement[]} An Array of DOM elements which match the selector. If there are
          * no matches, and empty Array is returned.
          */
         jsSelect: function(path, root, type){
@@ -573,15 +591,51 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
             var docEl = (el ? el.ownerDocument || el : 0).documentElement;
             return docEl ? docEl.nodeName !== "HTML" : false;
         },
-        
+
+        /**
+         * Selects an array of DOM nodes by CSS/XPath selector.
+         *
+         * Uses [document.querySelectorAll][0] if browser supports that, otherwise falls back to
+         * {@link Ext.DomQuery#jsSelect} to do the work.
+         *
+         * Aliased as {@link Ext#query}.
+         *
+         * [0]: https://developer.mozilla.org/en/DOM/document.querySelectorAll
+         *
+         * @param {String} path The selector/xpath query
+         * @param {HTMLElement} root (optional) The start of the query (defaults to document).
+         * @return {HTMLElement[]} An array of DOM elements (not a NodeList as returned by `querySelectorAll`).
+         * Empty array when no matches.
+         * @method
+         */
         select : document.querySelectorAll ? function(path, root, type) {
             root = root || document;
-            if (!Ext.DomQuery.isXml(root)) {
-            try {
-                var cs = root.querySelectorAll(path);
-                return Ext.Array.toArray(cs);
-            }
-            catch (ex) {}
+            /* 
+             * Safari 3.x can't handle uppercase or unicode characters when in quirks mode.
+             */
+            if (!Ext.DomQuery.isXml(root) && !(Ext.isSafari3 && !Ext.isStrict)) { 
+                try {
+                    /*
+                     * This checking here is to "fix" the behaviour of querySelectorAll
+                     * for non root document queries. The way qsa works is intentional,
+                     * however it's definitely not the expected way it should work.
+                     * More info: http://ejohn.org/blog/thoughts-on-queryselectorall/
+                     *
+                     * We only modify the path for single selectors (ie, no multiples),
+                     * without a full parser it makes it difficult to do this correctly.
+                     */
+                    var isDocumentRoot = root.nodeType === 9,
+                        _path = path,
+                        _root = root;
+
+                    if (!isDocumentRoot && path.indexOf(',') === -1 && !startIdRe.test(path)) {
+                        _path = '#' + Ext.id(root) + ' ' + path;
+                        _root = root.parentNode;
+                    }
+                    return Ext.Array.toArray(_root.querySelectorAll(_path));
+                }
+                catch (e) {
+                }
             }
             return Ext.DomQuery.jsSelect.call(this, path, root, type);
         } : function(path, root, type) {
@@ -591,8 +645,8 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         /**
          * Selects a single element.
          * @param {String} selector The selector/xpath query
-         * @param {Node} root (optional) The start of the query (defaults to document).
-         * @return {Element} The DOM element which matched the selector.
+         * @param {HTMLElement} root (optional) The start of the query (defaults to document).
+         * @return {HTMLElement} The DOM element which matched the selector.
          */
         selectNode : function(path, root){
             return Ext.DomQuery.select(path, root)[0];
@@ -601,8 +655,8 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         /**
          * Selects the value of a node, optionally replacing null with the defaultValue.
          * @param {String} selector The selector/xpath query
-         * @param {Node} root (optional) The start of the query (defaults to document).
-         * @param {String} defaultValue
+         * @param {HTMLElement} root (optional) The start of the query (defaults to document).
+         * @param {String} defaultValue (optional) When specified, this is return as empty value.
          * @return {String}
          */
         selectValue : function(path, root, defaultValue){
@@ -626,8 +680,8 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         /**
          * Selects the value of a node, parsing integers and floats. Returns the defaultValue, or 0 if none is specified.
          * @param {String} selector The selector/xpath query
-         * @param {Node} root (optional) The start of the query (defaults to document).
-         * @param {Number} defaultValue
+         * @param {HTMLElement} root (optional) The start of the query (defaults to document).
+         * @param {Number} defaultValue (optional) When specified, this is return as empty value.
          * @return {Number}
          */
         selectNumber : function(path, root, defaultValue){
@@ -637,7 +691,7 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
 
         /**
          * Returns true if the passed element(s) match the passed simple selector (e.g. div.some-class or span:first-child)
-         * @param {String/HTMLElement/Array} el An element id, element or array of elements
+         * @param {String/HTMLElement/HTMLElement[]} el An element id, element or array of elements
          * @param {String} selector The simple selector to test
          * @return {Boolean}
          */
@@ -652,11 +706,11 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
 
         /**
          * Filters an array of elements to only include matches of a simple selector (e.g. div.some-class or span:first-child)
-         * @param {Array} el An array of elements to filter
+         * @param {HTMLElement[]} el An array of elements to filter
          * @param {String} selector The simple selector to test
          * @param {Boolean} nonMatches If true, it returns the elements that DON'T match
          * the selector instead of the ones that match
-         * @return {Array} An Array of DOM elements which match the selector. If there are
+         * @return {HTMLElement[]} An Array of DOM elements which match the selector. If there are
          * no matches, and empty Array is returned.
          */
         filter : function(els, ss, nonMatches){
@@ -723,12 +777,12 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         },
 
         /**
-Object hash of "pseudo class" filter functions which are used when filtering selections. 
+Object hash of "pseudo class" filter functions which are used when filtering selections.
 Each function is passed two parameters:
 
 - **c** : Array
     An Array of DOM elements to filter.
-    
+
 - **v** : String
     The argument (if any) supplied in the selector.
 
@@ -940,11 +994,10 @@ Then external links could be gathered with the following statement:
 }();
 
 /**
- * Selects an array of DOM nodes by CSS/XPath selector. Shorthand of {@link Ext.DomQuery#select}
- * @param {String} path The selector/xpath query
- * @param {Node} root (optional) The start of the query (defaults to document).
- * @return {Array}
+ * Shorthand of {@link Ext.DomQuery#select}
  * @member Ext
  * @method query
+ * @alias Ext.DomQuery#select
  */
 Ext.query = Ext.DomQuery.select;
+

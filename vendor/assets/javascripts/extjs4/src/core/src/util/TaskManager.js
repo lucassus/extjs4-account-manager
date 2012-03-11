@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.TaskRunner
  * Provides the ability to execute one or more arbitrary tasks in a multithreaded
@@ -28,8 +42,7 @@ Ext.TaskManager.start({
  * Also see {@link Ext.util.DelayedTask}. 
  * 
  * @constructor
- * @param {Number} interval (optional) The minimum precision in milliseconds supported by this TaskRunner instance
- * (defaults to 10)
+ * @param {Number} [interval=10] The minimum precision in milliseconds supported by this TaskRunner instance
  */
 Ext.ns('Ext.util');
 

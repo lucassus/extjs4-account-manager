@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.Action
  * <p>An Action is a piece of reusable functionality that can be abstracted out of any particular component so that it
@@ -13,7 +27,7 @@
  * <li><code>setIconCls(string)</code></li>
  * <li><code>setDisabled(boolean)</code></li>
  * <li><code>setVisible(boolean)</code></li>
- * <li><code>setHandler(function)</code></li></ul>.</p>
+ * <li><code>setHandler(function)</code></li></ul></p>
  * <p>This allows the Action to control its associated Components.</p>
  * Example usage:<br>
  * <pre><code>
@@ -56,8 +70,6 @@ var btn = panel.getComponent('myAction');
 var aRef = btn.baseAction;
 aRef.setText('New text');
 </code></pre>
- * @constructor
- * @param {Object} config The configuration options
  */
 Ext.define('Ext.Action', {
 
@@ -66,12 +78,13 @@ Ext.define('Ext.Action', {
     /* End Definitions */
 
     /**
-     * @cfg {String} text The text to set for all components configured by this Action (defaults to '').
+     * @cfg {String} [text='']
+     * The text to set for all components configured by this Action.
      */
     /**
-     * @cfg {String} iconCls
+     * @cfg {String} [iconCls='']
      * The CSS class selector that specifies a background image to be used as the header icon for
-     * all components configured by this Action (defaults to '').
+     * all components configured by this Action.
      * <p>An example of specifying a custom icon class would be something like:
      * </p><pre><code>
 // specify the property in the config for the class:
@@ -83,24 +96,32 @@ Ext.define('Ext.Action', {
 </code></pre>
      */
     /**
-     * @cfg {Boolean} disabled True to disable all components configured by this Action, false to enable them (defaults to false).
+     * @cfg {Boolean} [disabled=false]
+     * True to disable all components configured by this Action, false to enable them.
      */
     /**
-     * @cfg {Boolean} hidden True to hide all components configured by this Action, false to show them (defaults to false).
+     * @cfg {Boolean} [hidden=false]
+     * True to hide all components configured by this Action, false to show them.
      */
     /**
-     * @cfg {Function} handler The function that will be invoked by each component tied to this Action
-     * when the component's primary event is triggered (defaults to undefined).
+     * @cfg {Function} handler
+     * The function that will be invoked by each component tied to this Action
+     * when the component's primary event is triggered.
      */
     /**
      * @cfg {String} itemId
      * See {@link Ext.Component}.{@link Ext.Component#itemId itemId}.
      */
     /**
-     * @cfg {Object} scope The scope (<code><b>this</b></code> reference) in which the
-     * <code>{@link #handler}</code> is executed. Defaults to the browser window.
+     * @cfg {Object} scope
+     * The scope (this reference) in which the {@link #handler} is executed.
+     * Defaults to the browser window.
      */
 
+    /**
+     * Creates new Action.
+     * @param {Object} config Config object.
+     */
     constructor : function(config){
         this.initialConfig = config;
         this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
@@ -168,7 +189,7 @@ Ext.define('Ext.Action', {
     },
 
     /**
-     * Returns true if the components using this Action are currently disabled, else returns false.  
+     * Returns true if the components using this Action are currently disabled, else returns false.
      */
     isDisabled : function(){
         return this.initialConfig.disabled;
@@ -229,9 +250,12 @@ Ext.define('Ext.Action', {
 
     // private
     callEach : function(fnName, args){
-        var cs = this.items;
-        for(var i = 0, len = cs.length; i < len; i++){
-            cs[i][fnName].apply(cs[i], args);
+        var items = this.items,
+            i = 0,
+            len = items.length;
+
+        for(; i < len; i++){
+            items[i][fnName].apply(items[i], args);
         }
     },
 
@@ -243,18 +267,17 @@ Ext.define('Ext.Action', {
 
     // private
     removeComponent : function(comp){
-        this.items.remove(comp);
+        Ext.Array.remove(this.items, comp);
     },
 
     /**
      * Executes this Action manually using the handler function specified in the original config object
      * or the handler function set with <code>{@link #setHandler}</code>.  Any arguments passed to this
      * function will be passed on to the handler function.
-     * @param {Mixed} arg1 (optional) Variable number of arguments passed to the handler function
-     * @param {Mixed} arg2 (optional)
-     * @param {Mixed} etc... (optional)
+     * @param {Object...} args (optional) Variable number of arguments passed to the handler function
      */
     execute : function(){
         this.initialConfig.handler.apply(this.initialConfig.scope || Ext.global, arguments);
     }
 });
+

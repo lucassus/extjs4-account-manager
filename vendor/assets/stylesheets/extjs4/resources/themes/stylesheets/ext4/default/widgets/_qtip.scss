@@ -140,7 +140,8 @@
     }
 
     .#{$prefix}form-invalid-tip-body {
-        background: theme-image($theme-name, 'form/exclamation.gif') 1px 1px no-repeat;
+        background: 1px 1px no-repeat;
+        background-image: theme-background-image($theme-name, 'form/exclamation.gif');
         padding-left: 22px;
 
         li {
@@ -159,14 +160,5 @@
         $background-color: $tip-error-background-color,
         $background-gradient: $tip-background-gradient,
         $table: true
-    );
-    
-    @include x-frame(
-        $cls: 'form-invalid-tip-header',
-        $ui: 'default',
-        $border-radius: $tip-error-border-radius,
-        $border-width: $tip-error-border-width,
-        $background-color: $tip-error-background-color,
-        $background-gradient: $tip-background-gradient
     );
 }

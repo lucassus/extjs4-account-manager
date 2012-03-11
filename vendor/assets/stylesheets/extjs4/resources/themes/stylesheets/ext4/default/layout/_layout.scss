@@ -39,18 +39,6 @@
     .#{$prefix}docked-noborder-left {
         border-left-width: 0 !important;
     }
-        
-/*    
-    // Needs important to win over the .#{$prefix}docked-left/right/top/bottom rules above.
-    .\#{$prefix}panel-collapsed-placeholder {
-        border-width: 1px !important;
-    } 
-    
-    .\#{$prefix}region-collapsed-placeholder {
-        border-width: 1px;
-    }
-    */
-    
     
     .#{$prefix}box-inner {
         overflow:hidden;
@@ -84,6 +72,10 @@
 
     .#{$prefix}abs-layout-item {
         position: absolute;
+    }
+
+    .#{$prefix}fit-item {
+        position: relative;
     }
 
     .#{$prefix}border-layout-ct {
@@ -195,7 +187,8 @@
             position: relative;
             cursor: pointer;
             height: $tab-height;
-            background: theme-image($theme-name, 'tab-bar/scroll-left.gif') transparent no-repeat -18px 0;
+            background: transparent no-repeat -18px 0;
+            background-image: theme-background-image($theme-name, 'tab-bar/scroll-left.gif');
         }
         .#{$prefix}toolbar-scroll-left-hover {
             background-position: 0 0;
@@ -204,10 +197,12 @@
         .#{$prefix}tabbar-scroll-left-disabled {
             background-position: -18px 0;
             @include opacity(.5);
+            
+            cursor:default;
         }
 
         .#{$prefix}toolbar-scroll-left {
-            background-image: theme-image($theme-name, 'toolbar/scroll-left.gif');
+            background-image: theme-background-image($theme-name, 'toolbar/scroll-left.gif');
             background-position: -14px 0;
         }
         .#{$prefix}toolbar-scroll-left-hover {
@@ -240,7 +235,8 @@
             position: relative;
             cursor: pointer;
             height: $tab-height;
-            background: theme-image($theme-name, 'tab-bar/scroll-right.gif') transparent no-repeat 0 0;
+            background: transparent no-repeat 0 0;
+            background-image: theme-background-image($theme-name, 'tab-bar/scroll-right.gif');
         }
         .#{$prefix}toolbar-scroll-right-hover {
             background-position: -18px 0;
@@ -249,10 +245,12 @@
         .#{$prefix}tabbar-scroll-right-disabled {
             background-position: 0 0;
             @include opacity(.5);
+            
+            cursor:default;
         }
 
         .#{$prefix}toolbar-scroll-right {
-            background-image: theme-image($theme-name, 'toolbar/scroll-right.gif');
+            background-image: theme-background-image($theme-name, 'toolbar/scroll-right.gif');
         }
         .#{$prefix}toolbar-scroll-right-hover {
             background-position: -14px 0;
@@ -276,7 +274,8 @@
             font-size: 0;
         }
         .#{$prefix}menu-scroll-top {
-            background: theme-image($theme-name, 'layout/mini-top.gif') transparent no-repeat center center;
+            background: transparent no-repeat center center;
+            background-image: theme-background-image($theme-name, 'layout/mini-top.gif');
             height: 8px;
             cursor: pointer;
         }
@@ -287,7 +286,8 @@
             font-size: 0;
         }
         .#{$prefix}menu-scroll-bottom {
-            background: theme-image($theme-name, 'layout/mini-bottom.gif') transparent no-repeat center center;
+            background: transparent no-repeat center center;
+            background-image: theme-background-image($theme-name, 'layout/mini-bottom.gif');
             height: 8px;
             cursor: pointer;
         }

@@ -1,12 +1,24 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.ShadowPool
- * @extends Object
  * Private utility class that manages the internal Shadow cache
  * @private
  */
 Ext.define('Ext.ShadowPool', {
     singleton: true,
-    requires: ['Ext.core.DomHelper'],
+    requires: ['Ext.DomHelper'],
 
     markup: function() {
         if (Ext.supports.CSS3BoxShadow) {
@@ -39,7 +51,7 @@ Ext.define('Ext.ShadowPool', {
     pull: function() {
         var sh = this.shadows.shift();
         if (!sh) {
-            sh = Ext.get(Ext.core.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
+            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
             sh.autoBoxAdjust = false;
         }
         return sh;

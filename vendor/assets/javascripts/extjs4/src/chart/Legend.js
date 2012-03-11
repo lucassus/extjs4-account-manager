@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.Legend
  *
@@ -14,73 +28,74 @@
  *     legend: {
  *         position: 'right'
  *     },
- * 
- * Full example:
-    <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        shadow: true,
-        theme: 'Category1',
-        legend: {
-            position: 'top'
-        },
-         axes: [{
-                type: 'Numeric',
-                grid: true,
-                position: 'left',
-                fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
-                title: 'Sample Values',
-                grid: {
-                    odd: {
-                        opacity: 1,
-                        fill: '#ddd',
-                        stroke: '#bbb',
-                        'stroke-width': 1
-                    }
-                },
-                minimum: 0,
-                adjustMinimumByMajorUnit: 0
-            }, {
-                type: 'Category',
-                position: 'bottom',
-                fields: ['name'],
-                title: 'Sample Metrics',
-                grid: true,
-                label: {
-                    rotate: {
-                        degrees: 315
-                    }
-                }
-        }],
-        series: [{
-            type: 'area',
-            highlight: false,
-            axis: 'left',
-            xField: 'name',
-            yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
-            style: {
-                opacity: 0.93
-            }
-        }]
-    });    
-    </code></pre>    
  *
- * @constructor
+ * ## Example
+ *
+ *     @example
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             { 'name': 'metric one',   'data1': 10, 'data2': 12, 'data3': 14, 'data4': 8,  'data5': 13 },
+ *             { 'name': 'metric two',   'data1': 7,  'data2': 8,  'data3': 16, 'data4': 10, 'data5': 3  },
+ *             { 'name': 'metric three', 'data1': 5,  'data2': 2,  'data3': 14, 'data4': 12, 'data5': 7  },
+ *             { 'name': 'metric four',  'data1': 2,  'data2': 14, 'data3': 6,  'data4': 1,  'data5': 23 },
+ *             { 'name': 'metric five',  'data1': 27, 'data2': 38, 'data3': 36, 'data4': 13, 'data5': 33 }
+ *         ]
+ *     });
+ *
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         shadow: true,
+ *         theme: 'Category1',
+ *         legend: {
+ *             position: 'top'
+ *         },
+ *         axes: [
+ *             {
+ *                 type: 'Numeric',
+ *                 grid: true,
+ *                 position: 'left',
+ *                 fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *                 title: 'Sample Values',
+ *                 grid: {
+ *                     odd: {
+ *                         opacity: 1,
+ *                         fill: '#ddd',
+ *                         stroke: '#bbb',
+ *                         'stroke-width': 1
+ *                     }
+ *                 },
+ *                 minimum: 0,
+ *                 adjustMinimumByMajorUnit: 0
+ *             },
+ *             {
+ *                 type: 'Category',
+ *                 position: 'bottom',
+ *                 fields: ['name'],
+ *                 title: 'Sample Metrics',
+ *                 grid: true,
+ *                 label: {
+ *                     rotate: {
+ *                         degrees: 315
+ *                     }
+ *                 }
+ *             }
+ *         ],
+ *         series: [{
+ *             type: 'area',
+ *             highlight: false,
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             style: {
+ *                 opacity: 0.93
+ *             }
+ *         }]
+ *     });
  */
 Ext.define('Ext.chart.Legend', {
 
@@ -106,7 +121,7 @@ Ext.define('Ext.chart.Legend', {
 
     /**
      * @cfg {Number} x
-     * X-position of the legend box. Used directly if position is set to "float", otherwise 
+     * X-position of the legend box. Used directly if position is set to "float", otherwise
      * it will be calculated dynamically.
      */
     x: 0,
@@ -165,6 +180,10 @@ Ext.define('Ext.chart.Legend', {
      */
     boxZIndex: 100,
 
+    /**
+     * Creates new Legend.
+     * @param {Object} config  (optional) Config object.
+     */
     constructor: function(config) {
         var me = this;
         if (config) {
@@ -176,7 +195,7 @@ Ext.define('Ext.chart.Legend', {
          * @type {Boolean}
          */
         me.isVertical = ("left|right|float".indexOf(me.position) !== -1);
-        
+
         // cache these here since they may get modified later on
         me.origX = me.x;
         me.origY = me.y;
@@ -187,9 +206,9 @@ Ext.define('Ext.chart.Legend', {
      */
     create: function() {
         var me = this;
+        me.createBox();
         me.createItems();
         if (!me.created && me.isDisplayed()) {
-            me.createBox();
             me.created = true;
 
             // Listen for changes to series titles to trigger regeneration of the legend
@@ -229,8 +248,8 @@ Ext.define('Ext.chart.Legend', {
             math = Math,
             mfloor = math.floor,
             mmax = math.max,
-            index = 0, 
-            i = 0, 
+            index = 0,
+            i = 0,
             len = items ? items.length : 0,
             x, y, spacing, item, bbox, height, width;
 
@@ -256,7 +275,7 @@ Ext.define('Ext.chart.Legend', {
                     bbox = item.getBBox();
 
                     //always measure from x=0, since not all markers go all the way to the left
-                    width = bbox.width; 
+                    width = bbox.width;
                     height = bbox.height;
 
                     if (i + j === 0) {
@@ -307,13 +326,20 @@ Ext.define('Ext.chart.Legend', {
      */
     createBox: function() {
         var me = this,
-            box = me.boxSprite = me.chart.surface.add(Ext.apply({
-                type: 'rect',
-                stroke: me.boxStroke,
-                "stroke-width": me.boxStrokeWidth,
-                fill: me.boxFill,
-                zIndex: me.boxZIndex
-            }, me.getBBox()));
+            box;
+
+        if (me.boxSprite) {
+            me.boxSprite.destroy();
+        }
+        
+        box = me.boxSprite = me.chart.surface.add(Ext.apply({
+            type: 'rect',
+            stroke: me.boxStroke,
+            "stroke-width": me.boxStrokeWidth,
+            fill: me.boxFill,
+            zIndex: me.boxZIndex
+        }, me.getBBox()));
+
         box.redraw();
     },
 
@@ -335,7 +361,7 @@ Ext.define('Ext.chart.Legend', {
             chartY = chartBBox.y + insets,
             surface = chart.surface,
             mfloor = Math.floor;
-        
+
         if (me.isDisplayed()) {
             // Find the position based on the dimensions
             switch(me.position) {
@@ -371,3 +397,4 @@ Ext.define('Ext.chart.Legend', {
         }
     }
 });
+

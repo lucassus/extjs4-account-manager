@@ -1,11 +1,26 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.layout.component.Component
  * @extends Ext.layout.Layout
+ *
+ * This class is intended to be extended or created via the {@link Ext.Component#componentLayout layout}
+ * configuration property.  See {@link Ext.Component#componentLayout} for additional details.
+ *
  * @private
- * <p>This class is intended to be extended or created via the <tt><b>{@link Ext.Component#componentLayout layout}</b></tt>
- * configuration property.  See <tt><b>{@link Ext.Component#componentLayout}</b></tt> for additional details.</p>
  */
-
 Ext.define('Ext.layout.component.Component', {
 
     /* Begin Definitions */
@@ -33,13 +48,13 @@ Ext.define('Ext.layout.component.Component', {
                     left: 0,
                     bottom: 0,
                     right: 0
-                }; 
+                };
             }
         }
         me.callParent(arguments);
     },
 
-    beforeLayout : function(width, height, isSetSize, layoutOwner) {
+    beforeLayout : function(width, height, isSetSize, callingContainer) {
         this.callParent(arguments);
 
         var me = this,
@@ -50,14 +65,16 @@ Ext.define('Ext.layout.component.Component', {
             ownerElChild = owner.el.child,
             layoutCollection;
 
-        /**
-        * Do not layout calculatedSized components for fixedLayouts unless the ownerCt == layoutOwner
-        * fixedLayouts means layouts which are never auto/auto in the sizing that comes from their ownerCt.
-        * Currently 3 layouts MAY be auto/auto (Auto, Border, and Box)
-        * The reason for not allowing component layouts is to stop component layouts from things such as Updater and
-        * form Validation.
-        */
-        if (!isSetSize && !(Ext.isNumber(width) && Ext.isNumber(height)) && ownerCt && ownerCt.layout && ownerCt.layout.fixedLayout && ownerCt != layoutOwner) {
+        // Cache the size we began with so we can see if there has been any effect.
+        me.previousComponentSize = me.lastComponentSize;
+
+        // Do not allow autoing of any dimensions which are fixed
+        if (!isSetSize
+            && ((!Ext.isNumber(width) && owner.isFixedWidth()) ||
+                (!Ext.isNumber(height) && owner.isFixedHeight()))
+            // unless we are being told to do so by the ownerCt's layout
+            && callingContainer && callingContainer !== ownerCt) {
+            
             me.doContainerLayout();
             return false;
         }
@@ -78,9 +95,7 @@ Ext.define('Ext.layout.component.Component', {
         }
 
         if (isVisible && this.needsLayout(width, height)) {
-            me.rawWidth = width;
-            me.rawHeight = height;
-            return owner.beforeComponentLayout(width, height, isSetSize, layoutOwner);
+            return owner.beforeComponentLayout(width, height, isSetSize, callingContainer);
         }
         else {
             return false;
@@ -90,21 +105,33 @@ Ext.define('Ext.layout.component.Component', {
     /**
     * Check if the new size is different from the current size and only
     * trigger a layout if it is necessary.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     needsLayout : function(width, height) {
-        this.lastComponentSize = this.lastComponentSize || {
-            width: -Infinity,
-            height: -Infinity
-        };
-        return (this.childrenChanged || this.lastComponentSize.width !== width || this.lastComponentSize.height !== height);
+        var me = this,
+            widthBeingChanged,
+            heightBeingChanged;
+            me.lastComponentSize = me.lastComponentSize || {
+                width: -Infinity,
+                height: -Infinity
+            };
+
+        // If autoWidthing, or an explicitly different width is passed, then the width is being changed.
+        widthBeingChanged  = !Ext.isDefined(width)  || me.lastComponentSize.width  !== width;
+
+        // If autoHeighting, or an explicitly different height is passed, then the height is being changed.
+        heightBeingChanged = !Ext.isDefined(height) || me.lastComponentSize.height !== height;
+
+
+        // isSizing flag added to prevent redundant layouts when going up the layout chain
+        return !me.isSizing && (me.childrenChanged || widthBeingChanged || heightBeingChanged);
     },
 
     /**
     * Set the size of any element supporting undefined, null, and values.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     setElementSize: function(el, width, height) {
         if (width !== undefined && height !== undefined) {
@@ -120,7 +147,7 @@ Ext.define('Ext.layout.component.Component', {
 
     /**
      * Returns the owner component's resize element.
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
      getTarget : function() {
          return this.owner.el;
@@ -129,7 +156,7 @@ Ext.define('Ext.layout.component.Component', {
     /**
      * <p>Returns the element into which rendering must take place. Defaults to the owner Component's encapsulating element.</p>
      * May be overridden in Component layout managers which implement an inner element.
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
     getRenderTarget : function() {
         return this.owner.el;
@@ -137,8 +164,8 @@ Ext.define('Ext.layout.component.Component', {
 
     /**
     * Set the size of the target element.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     setTargetSize : function(width, height) {
         var me = this;
@@ -190,7 +217,7 @@ Ext.define('Ext.layout.component.Component', {
                     right: body.getMargin('r'),
                     bottom: body.getMargin('b'),
                     left: body.getMargin('l')
-                } 
+                }
             };
         }
         return this.targetInfo;
@@ -200,9 +227,14 @@ Ext.define('Ext.layout.component.Component', {
     doOwnerCtLayouts: function() {
         var owner = this.owner,
             ownerCt = owner.ownerCt,
-            ownerCtComponentLayout, ownerCtContainerLayout;
+            ownerCtComponentLayout, ownerCtContainerLayout,
+            curSize = this.lastComponentSize,
+            prevSize = this.previousComponentSize,
+            widthChange  = (prevSize && curSize && Ext.isNumber(curSize.width )) ? curSize.width  !== prevSize.width  : true,
+            heightChange = (prevSize && curSize && Ext.isNumber(curSize.height)) ? curSize.height !== prevSize.height : true;
 
-        if (!ownerCt) {
+        // If size has not changed, do not inform upstream layouts
+        if (!ownerCt || (!widthChange && !heightChange)) {
             return;
         }
 
@@ -211,11 +243,15 @@ Ext.define('Ext.layout.component.Component', {
 
         if (!owner.floating && ownerCtComponentLayout && ownerCtComponentLayout.monitorChildren && !ownerCtComponentLayout.layoutBusy) {
             if (!ownerCt.suspendLayout && ownerCtContainerLayout && !ownerCtContainerLayout.layoutBusy) {
-                // AutoContainer Layout and Dock with auto in some dimension
-                if (ownerCtContainerLayout.bindToOwnerCtComponent === true) {
+
+                // If the owning Container may be adjusted in any of the the dimension which have changed, perform its Component layout
+                if (((widthChange && !ownerCt.isFixedWidth()) || (heightChange && !ownerCt.isFixedHeight()))) {
+                    // Set the isSizing flag so that the upstream Container layout (called after a Component layout) can omit this component from sizing operations
+                    this.isSizing = true;
                     ownerCt.doComponentLayout();
+                    this.isSizing = false;
                 }
-                // Box Layouts
+                // Execute upstream Container layout
                 else if (ownerCtContainerLayout.bindToOwnerCtContainer === true) {
                     ownerCtContainerLayout.layout();
                 }
@@ -232,7 +268,7 @@ Ext.define('Ext.layout.component.Component', {
 
         // Run the container layout if it exists (layout for child items)
         // **Unless automatic laying out is suspended, or the layout is currently running**
-        if (!owner.suspendLayout && layout && layout.isLayout && !layout.layoutBusy) {
+        if (!owner.suspendLayout && layout && layout.isLayout && !layout.layoutBusy && !layout.isAutoDock) {
             layout.layout();
         }
 
@@ -250,3 +286,4 @@ Ext.define('Ext.layout.component.Component', {
         this.owner.afterComponentLayout(width, height, isSetSize, layoutOwner);
     }
 });
+

@@ -1,6 +1,20 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.JSON
- * Modified version of Douglas Crockford"s json.js that doesn"t
+ * Modified version of Douglas Crockford's JSON.js that doesn't
  * mess with the Object prototype
  * http://www.json.org/js.html
  * @singleton
@@ -93,15 +107,15 @@ Ext.JSON = new(function() {
      * <b>The returned value includes enclosing double quotation marks.</b></p>
      * <p>The default return format is "yyyy-mm-ddThh:mm:ss".</p>
      * <p>To override this:</p><pre><code>
-     Ext.JSON.encodeDate = function(d) {
-     return d.format('"Y-m-d"');
-     };
+Ext.JSON.encodeDate = function(d) {
+    return Ext.Date.format(d, '"Y-m-d"');
+};
      </code></pre>
      * @param {Date} d The Date to encode
      * @return {String} The string literal to use in a JSON string.
      */
     this.encodeDate = function(o) {
-        return '"' + o.getFullYear() + "-" 
+        return '"' + o.getFullYear() + "-"
         + pad(o.getMonth() + 1) + "-"
         + pad(o.getDate()) + "T"
         + pad(o.getHours()) + ":"
@@ -111,7 +125,7 @@ Ext.JSON = new(function() {
 
     /**
      * Encodes an Object, Array or other value
-     * @param {Mixed} o The variable to encode
+     * @param {Object} o The variable to encode
      * @return {String} The JSON string
      */
     this.encode = function() {
@@ -148,7 +162,7 @@ Ext.JSON = new(function() {
                 Ext.Error.raise({
                     sourceClass: "Ext.JSON",
                     sourceMethod: "decode",
-                    msg: "You're trying to decode and invalid JSON String: " + json
+                    msg: "You're trying to decode an invalid JSON String: " + json
                 });
             }
         };
@@ -157,19 +171,17 @@ Ext.JSON = new(function() {
 })();
 /**
  * Shorthand for {@link Ext.JSON#encode}
- * @param {Mixed} o The variable to encode
- * @return {String} The JSON string
  * @member Ext
  * @method encode
+ * @alias Ext.JSON#encode
  */
 Ext.encode = Ext.JSON.encode;
 /**
  * Shorthand for {@link Ext.JSON#decode}
- * @param {String} json The JSON string
- * @param {Boolean} safe (optional) Whether to return null or throw an exception if the JSON is invalid.
- * @return {Object} The resulting object
  * @member Ext
  * @method decode
+ * @alias Ext.JSON#decode
  */
 Ext.decode = Ext.JSON.decode;
+
 

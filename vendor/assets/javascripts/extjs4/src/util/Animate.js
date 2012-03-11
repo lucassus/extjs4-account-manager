@@ -1,9 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Animate
  * This animation class is a mixin.
  * 
  * Ext.util.Animate provides an API for the creation of animated transitions of properties and styles.  
- * This class is used as a mixin and currently applied to {@link Ext.core.Element}, {@link Ext.CompositeElement}, 
+ * This class is used as a mixin and currently applied to {@link Ext.Element}, {@link Ext.CompositeElement}, 
  * {@link Ext.draw.Sprite}, {@link Ext.draw.CompositeSprite}, and {@link Ext.Component}.  Note that Components 
  * have a limited subset of what attributes can be animated such as top, left, x, y, height, width, and 
  * opacity (color, paddings, and margins can not be animated).
@@ -121,7 +135,7 @@
  * 
  * ## Animation Keyframes
  *
- * You can also set up complex animations with {@link Ext.fx.Anim#keyframe keyframe} which follows the 
+ * You can also set up complex animations with {@link Ext.fx.Anim#keyframes keyframes} which follow the 
  * CSS3 Animation configuration pattern. Note rotation, translation, and scaling can only be done for sprites. 
  * The previous example can be written with the following syntax:
  * 
@@ -145,7 +159,7 @@
  * 
  * ## Animation Events
  * 
- * Each animation you create has events for {@link Ext.fx.Anim#beforeanimation beforeanimation}, 
+ * Each animation you create has events for {@link Ext.fx.Anim#beforeanimate beforeanimate}, 
  * {@link Ext.fx.Anim#afteranimate afteranimate}, and {@link Ext.fx.Anim#lastframe lastframe}.  
  * Keyframed animations adds an additional {@link Ext.fx.Animator#keyframe keyframe} event which 
  * fires for each keyframe in your animation.
@@ -206,7 +220,7 @@ Ext.define('Ext.util.Animate', {
 
     /**
      * <p>Perform custom animation on this object.<p>
-     * <p>This method is applicable to both the the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
+     * <p>This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.Element Element} class.
      * It performs animated transitions of certain properties of this object over a specified timeline.</p>
      * <p>The sole parameter is an object which specifies start property values, end property values, and properties which
      * describe the timeline. Of the properties listed below, only <b><code>to</code></b> is mandatory.</p>
@@ -233,7 +247,7 @@ Ext.define('Ext.util.Animate', {
      * <li><code>listeners</code> <div class="sub-desc">This is a standard {@link Ext.util.Observable#listeners listeners} configuration object which may be used
      * to inject behaviour at either the <code>beforeanimate</code> event or the <code>afteranimate</code> event.</div></li>
      * </ul></p>
-     * <h3>Animating an {@link Ext.core.Element Element}</h3>
+     * <h3>Animating an {@link Ext.Element Element}</h3>
      * When animating an Element, the following properties may be specified in <code>from</code>, <code>to</code>, and <code>keyframe</code> objects:<ul>
      * <li><code>x</code> <div class="sub-desc">The page X position in pixels.</div></li>
      * <li><code>y</code> <div class="sub-desc">The page Y position in pixels</div></li>
@@ -324,59 +338,65 @@ myWindow.header.el.on('click', function() {
     },
 
     /**
+     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
+     * @method
      */
     stopFx: Ext.Function.alias(Ext.util.Animate, 'stopAnimation'),
 
     /**
-     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
      */
     stopAnimation: function() {
         Ext.fx.Manager.stopAnimation(this.id);
+        return this;
     },
 
     /**
      * Ensures that all effects queued after syncFx is called on this object are
      * run concurrently.  This is the opposite of {@link #sequenceFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     syncFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: true
         });
+        return this;
     },
 
     /**
      * Ensures that all effects queued after sequenceFx is called on this object are
      * run in sequence.  This is the opposite of {@link #syncFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     sequenceFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: false
         });
+        return this;
     },
 
     /**
      * @deprecated 4.0 Replaced by {@link #getActiveAnimation}
-     * Returns thq current animation if this object has any effects actively running or queued, else returns false.
-     * @return {Mixed} anim if element has active effects, else false
+     * @alias Ext.util.Animate#getActiveAnimation
+     * @method
      */
     hasActiveFx: Ext.Function.alias(Ext.util.Animate, 'getActiveAnimation'),
 
     /**
-     * Returns thq current animation if this object has any effects actively running or queued, else returns false.
-     * @return {Mixed} anim if element has active effects, else false
+     * Returns the current animation if this object has any effects actively running or queued, else returns false.
+     * @return {Ext.fx.Anim/Boolean} Anim if element has active effects, else false
      */
     getActiveAnimation: function() {
         return Ext.fx.Manager.getActiveAnimation(this.id);
     }
+}, function(){
+    // Apply Animate mixin manually until Element is defined in the proper 4.x way
+    Ext.applyIf(Ext.Element.prototype, this.prototype);
+    // We need to call this again so the animation methods get copied over to CE
+    Ext.CompositeElementLite.importElementMethods();
 });
-
-// Apply Animate mixin manually until Element is defined in the proper 4.x way
-Ext.applyIf(Ext.core.Element.prototype, Ext.util.Animate.prototype);

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.axis.Gauge
  * @extends Ext.chart.axis.Abstract
@@ -9,15 +23,14 @@
  *
  * A possible configuration for this axis would look like:
  *
-            axes: [{
-                type: 'gauge',
-                position: 'gauge',
-                minimum: 0,
-                maximum: 100,
-                steps: 10,
-                margin: 7
-            }],
- * 
+ *     axes: [{
+ *         type: 'gauge',
+ *         position: 'gauge',
+ *         minimum: 0,
+ *         maximum: 100,
+ *         steps: 10,
+ *         margin: 7
+ *     }],
  */
 Ext.define('Ext.chart.axis.Gauge', {
 
@@ -26,21 +39,30 @@ Ext.define('Ext.chart.axis.Gauge', {
     extend: 'Ext.chart.axis.Abstract',
 
     /* End Definitions */
-    
+
     /**
-     * @cfg {Number} minimum (required) the minimum value of the interval to be displayed in the axis.
+     * @cfg {Number} minimum (required)
+     * The minimum value of the interval to be displayed in the axis.
      */
 
     /**
-     * @cfg {Number} maximum (required) the maximum value of the interval to be displayed in the axis.
+     * @cfg {Number} maximum (required)
+     * The maximum value of the interval to be displayed in the axis.
      */
 
     /**
-     * @cfg {Number} steps (required) the number of steps and tick marks to add to the interval.
+     * @cfg {Number} steps (required)
+     * The number of steps and tick marks to add to the interval.
      */
 
     /**
-     * @cfg {Number} margin (optional) the offset positioning of the tick marks and labels in pixels. Default's 10.
+     * @cfg {Number} [margin=10]
+     * The offset positioning of the tick marks and labels in pixels.
+     */
+
+    /**
+     * @cfg {String} title
+     * The title for the Axis.
      */
 
     position: 'gauge',
@@ -103,7 +125,7 @@ Ext.define('Ext.chart.axis.Gauge', {
             this.drawTitle();
         }
     },
-    
+
     drawTitle: function() {
         var me = this,
             chart = me.chart,
@@ -111,12 +133,12 @@ Ext.define('Ext.chart.axis.Gauge', {
             bbox = chart.chartBBox,
             labelSprite = me.titleSprite,
             labelBBox;
-        
+
         if (!labelSprite) {
             me.titleSprite = labelSprite = surface.add({
                 type: 'text',
                 zIndex: 2
-            });    
+            });
         }
         labelSprite.setAttributes(Ext.apply({
             text: me.title

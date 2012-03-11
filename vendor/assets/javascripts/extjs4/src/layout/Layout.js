@@ -1,10 +1,20 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.layout.Layout
- * @extends Object
- * @private
  * Base Layout class - extended by ComponentLayout and ContainerLayout
  */
-
 Ext.define('Ext.layout.Layout', {
 
     /* Begin Definitions */
@@ -20,12 +30,12 @@ Ext.define('Ext.layout.Layout', {
             if (layout instanceof Ext.layout.Layout) {
                 return Ext.createByAlias('layout.' + layout);
             } else {
-                if (Ext.isObject(layout)) {
-                    type = layout.type;
+                if (!layout || typeof layout === 'string') {
+                    type = layout || defaultType;
+                    layout = {};                    
                 }
                 else {
-                    type = layout || defaultType;
-                    layout = {};
+                    type = layout.type || defaultType;
                 }
                 return Ext.createByAlias('layout.' + type, layout || {});
             }
@@ -61,8 +71,12 @@ Ext.define('Ext.layout.Layout', {
     },
 
     beforeLayout : function() {
-        this.renderItems(this.getLayoutItems(), this.getRenderTarget());
+        this.renderChildren();
         return true;
+    },
+
+    renderChildren: function () {
+        this.renderItems(this.getLayoutItems(), this.getRenderTarget());
     },
 
     /**
@@ -71,17 +85,20 @@ Ext.define('Ext.layout.Layout', {
      * also determines if the items are in the proper place dom.
      */
     renderItems : function(items, target) {
-        var ln = items.length,
+        var me = this,
+            ln = items.length,
             i = 0,
             item;
 
         for (; i < ln; i++) {
             item = items[i];
             if (item && !item.rendered) {
-                this.renderItem(item, target, i);
-            }
-            else if (!this.isValidParent(item, target, i)) {
-                this.moveItem(item, target, i);
+                me.renderItem(item, target, i);
+            } else if (!me.isValidParent(item, target, i)) {
+                me.moveItem(item, target, i);
+            } else {
+                // still need to configure the item, it may have moved in the container.
+                me.configureItem(item);
             }
         }
     },
@@ -102,14 +119,21 @@ Ext.define('Ext.layout.Layout', {
      * @private
      * Renders the given Component into the target Element.
      * @param {Ext.Component} item The Component to render
-     * @param {Ext.core.Element} target The target Element
+     * @param {Ext.Element} target The target Element
      * @param {Number} position The position within the target to render the item to
      */
     renderItem : function(item, target, position) {
+        var me = this;
         if (!item.rendered) {
+            if (me.itemCls) {
+                item.addCls(me.itemCls);
+            }
+            if (me.owner.itemCls) {
+                item.addCls(me.owner.itemCls);
+            }
             item.render(target, position);
-            this.configureItem(item);
-            this.childrenChanged = true;
+            me.configureItem(item);
+            me.childrenChanged = true;
         }
     },
 
@@ -135,10 +159,13 @@ Ext.define('Ext.layout.Layout', {
      * initialized flag when complete.
      */
     initLayout : function() {
-        if (!this.initialized && !Ext.isEmpty(this.targetCls)) {
-            this.getTarget().addCls(this.targetCls);
+        var me = this,
+            targetCls = me.targetCls;
+            
+        if (!me.initialized && !Ext.isEmpty(targetCls)) {
+            me.getTarget().addCls(targetCls);
         }
-        this.initialized = true;
+        me.initialized = true;
     },
 
     // @private Sets the layout owner
@@ -154,19 +181,9 @@ Ext.define('Ext.layout.Layout', {
     /**
      * @private
      * Applies itemCls
+     * Empty template method
      */
-    configureItem: function(item) {
-        var me = this,
-            el = item.el,
-            owner = me.owner;
-            
-        if (me.itemCls) {
-            el.addCls(me.itemCls);
-        }
-        if (owner.itemCls) {
-            el.addCls(owner.itemCls);
-        }
-    },
+    configureItem: Ext.emptyFn,
     
     // Placeholder empty functions for subclasses to extend
     onLayout : Ext.emptyFn,
@@ -180,30 +197,41 @@ Ext.define('Ext.layout.Layout', {
      * Removes itemCls
      */
     afterRemove : function(item) {
-        var me = this,
-            el = item.el,
-            owner = me.owner;
+        var el = item.el,
+            owner = this.owner,
+            itemCls = this.itemCls,
+            ownerCls = owner.itemCls;
             
-        if (item.rendered) {
-            if (me.itemCls) {
-                el.removeCls(me.itemCls);
+        // Clear managed dimensions flag when removed from the layout.
+        if (item.rendered && !item.isDestroyed) {
+            if (itemCls) {
+                el.removeCls(itemCls);
             }
-            if (owner.itemCls) {
-                el.removeCls(owner.itemCls);
+            if (ownerCls) {
+                el.removeCls(ownerCls);
             }
         }
+
+        // These flags are set at the time a child item is added to a layout.
+        // The layout must decide if it is managing the item's width, or its height, or both.
+        // See AbstractComponent for docs on these properties.
+        delete item.layoutManagedWidth;
+        delete item.layoutManagedHeight;
     },
 
-    /*
+    /**
      * Destroys this layout. This is a template method that is empty by default, but should be implemented
      * by subclasses that require explicit destruction to purge event handlers or remove DOM nodes.
-     * @protected
+     * @template
      */
     destroy : function() {
-        if (!Ext.isEmpty(this.targetCls)) {
-            var target = this.getTarget();
+        var targetCls = this.targetCls,
+            target;
+        
+        if (!Ext.isEmpty(targetCls)) {
+            target = this.getTarget();
             if (target) {
-                target.removeCls(this.targetCls);
+                target.removeCls(targetCls);
             }
         }
         this.onDestroy();

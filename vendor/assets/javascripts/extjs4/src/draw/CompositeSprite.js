@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.draw.CompositeSprite
  * @extends Ext.util.MixedCollection
@@ -94,7 +108,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         });
     },
 
-    /** Add a Sprite to the Group */
+    // Inherit docs from MixedCollection
     add: function(key, o) {
         var result = this.callParent(arguments);
         this.attachEvents(result);
@@ -105,7 +119,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         return this.callParent(arguments);
     },
 
-    /** Remove a Sprite from the Group */
+    // Inherit docs from MixedCollection
     remove: function(o) {
         var me = this;
         
@@ -117,13 +131,14 @@ Ext.define('Ext.draw.CompositeSprite', {
             mouseout: me.onMouseOut,
             click: me.onClick
         });
-        me.callParent(arguments);
+        return me.callParent(arguments);
     },
     
     /**
      * Returns the group bounding box.
-     * Behaves like {@link Ext.draw.Sprite} getBBox method.
-    */
+     * Behaves like {@link Ext.draw.Sprite#getBBox} method.
+     * @return {Object} an object with x, y, width, and height properties.
+     */
     getBBox: function() {
         var i = 0,
             sprite,
@@ -157,10 +172,11 @@ Ext.define('Ext.draw.CompositeSprite', {
     },
 
     /**
-     *  Iterates through all sprites calling
-     *  `setAttributes` on each one. For more information
-     *  {@link Ext.draw.Sprite} provides a description of the
-     *  attributes that can be set with this method.
+     * Iterates through all sprites calling `setAttributes` on each one. For more information {@link Ext.draw.Sprite}
+     * provides a description of the attributes that can be set with this method.
+     * @param {Object} attrs Attributes to be changed on the sprite.
+     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @return {Ext.draw.CompositeSprite} this
      */
     setAttributes: function(attrs, redraw) {
         var i = 0,
@@ -176,14 +192,16 @@ Ext.define('Ext.draw.CompositeSprite', {
     /**
      * Hides all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
+     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @return {Ext.draw.CompositeSprite} this
      */
-    hide: function(attrs) {
+    hide: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].hide();
+            items[i].hide(redraw);
         }
         return this;
     },
@@ -191,14 +209,16 @@ Ext.define('Ext.draw.CompositeSprite', {
     /**
      * Shows all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
+     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @return {Ext.draw.CompositeSprite} this
      */
-    show: function(attrs) {
+    show: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].show();
+            items[i].show(redraw);
         }
         return this;
     },
@@ -290,3 +310,4 @@ Ext.define('Ext.draw.CompositeSprite', {
         me.clearListeners();
     }
 });
+

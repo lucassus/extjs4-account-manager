@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.KeyNav
  * <p>Provides a convenient wrapper for normalized keyboard navigation.  KeyNav allows you to bind
@@ -19,9 +33,6 @@ var nav = new Ext.util.KeyNav("my-element", {
     scope : this
 });
 </code></pre>
- * @constructor
- * @param {Mixed} el The element to bind to
- * @param {Object} config The config
  */
 Ext.define('Ext.util.KeyNav', {
     
@@ -47,7 +58,12 @@ Ext.define('Ext.util.KeyNav', {
             tab: 9
         }
     },
-    
+
+    /**
+     * Creates new KeyNav.
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
+     * @param {Object} config The config
+     */
     constructor: function(el, config){
         this.setConfig(el, config || {});
     },
@@ -55,8 +71,8 @@ Ext.define('Ext.util.KeyNav', {
     /**
      * Sets up a configuration for the KeyNav.
      * @private
-     * @param {Mixed} el The element to bind to
-     * @param {Object}A configuration object as specified in the constructor.
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
+     * @param {Object} config A configuration object as specified in the constructor.
      */
     setConfig: function(el, config) {
         if (this.map) {
@@ -101,7 +117,7 @@ Ext.define('Ext.util.KeyNav', {
     
     /**
      * @cfg {Boolean} disabled
-     * True to disable this KeyNav instance (defaults to false)
+     * True to disable this KeyNav instance.
      */
     disabled: false,
     
@@ -109,13 +125,13 @@ Ext.define('Ext.util.KeyNav', {
      * @cfg {String} defaultEventAction
      * The method to call on the {@link Ext.EventObject} after this KeyNav intercepts a key.  Valid values are
      * {@link Ext.EventObject#stopEvent}, {@link Ext.EventObject#preventDefault} and
-     * {@link Ext.EventObject#stopPropagation} (defaults to 'stopEvent')
+     * {@link Ext.EventObject#stopPropagation}.
      */
     defaultEventAction: "stopEvent",
     
     /**
      * @cfg {Boolean} forceKeyDown
-     * Handle the keydown event instead of keypress (defaults to false).  KeyNav automatically does this for IE since
+     * Handle the keydown event instead of keypress.  KeyNav automatically does this for IE since
      * IE does not propagate special keys on keypress, but setting this to true will force other browsers to also
      * handle keydown instead of keypress.
      */
@@ -164,3 +180,4 @@ Ext.define('Ext.util.KeyNav', {
         return (forceKeyDown || Ext.EventManager.useKeyDown) ? 'keydown' : 'keypress';
     }
 });
+
