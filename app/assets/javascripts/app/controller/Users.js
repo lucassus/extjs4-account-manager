@@ -91,9 +91,9 @@ Ext.define('AM.controller.Users', {
     var grid = this.getList();
 
     if (selections.length > 0) {
-      grid.enableRecordRelatedButtons();
+      grid.enableRecordButtons();
     } else {
-      grid.disableRecordRelatedButtons();
+      grid.disableRecordButtons();
     }
   }
 

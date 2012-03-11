@@ -38,12 +38,12 @@ Ext.define('AM.view.user.List' ,{
     return this.getSelectionModel().getSelection()[0];
   },
 
-  enableRecordRelatedButtons: function() {
+  enableRecordButtons: function() {
     this.editUserButton.enable();
     this.deleteUserButton.enable();
   },
 
-  disableRecordRelatedButtons: function() {
+  disableRecordButtons: function() {
     this.editUserButton.disable();
     this.deleteUserButton.disable();
   }
