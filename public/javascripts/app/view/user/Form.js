@@ -10,6 +10,10 @@ Ext.define('AM.view.user.Form', {
     this.items = [{
       xtype: 'form',
       items: [{
+        xtype: 'hidden',
+        name : 'id',
+        fieldLabel: 'id'
+      }, {
         xtype: 'textfield',
         name : 'first_name',
         fieldLabel: 'First Name'
