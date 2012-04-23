@@ -1,10 +1,10 @@
-Simple example of ExtJS 4 MVC application.
-It's a CRUD for managing users accounts written in Ruby On Rails.
+An example of ExtJS 4 MVC application written at the top of Ruby on Rails stack.
+It's just a simple CRUD for managing users accounts.
 
-How to run in:
+How to run it:
 
 * bundle install --path=vendor/bundle
 * rake db:migrate
-* rake db:seed
-* rails s
+* rake db:seed # will populate the database with several user records
+* rails server
 * And finally navigate to http://localhost:3000
