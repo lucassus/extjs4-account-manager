@@ -3,7 +3,7 @@ It's just a simple CRUD for managing users accounts.
 
 How to run it:
 
-* bundle install --path=vendor/bundle
+* bundle install
 * rake db:migrate
 * rake db:seed # will populate the database with several user records
 * rails server
