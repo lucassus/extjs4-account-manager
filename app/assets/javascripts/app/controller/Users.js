@@ -21,7 +21,7 @@ Ext.define('AM.controller.Users', {
         selectionchange: this.selectionChange
       },
       'userform button[action=save]': {
-        click: this.updateUser
+        click: this.createOrUpdateUser
       },
       'button[action=addUser]': {
         click: this.addUser
@@ -46,30 +46,44 @@ Ext.define('AM.controller.Users', {
     view.down('form').loadRecord(record);
   },
 
-  updateUser: function(button) {
+  createOrUpdateUser: function(button) {
     var win = button.up('window');
     var form = win.down('form');
 
     var store = this.getUsersStore();
     var values = form.getValues();
 
-    var r = Ext.create('AM.model.User', values);
-    var errors = r.validate();
+    var user = Ext.create('AM.model.User', values);
+    var errors = user.validate();
 
     if (errors.isValid()) {
-      var record = form.getRecord();
-      if (record) {
+      var formRecord = form.getRecord();
+
+      if (formRecord) {
         // perform update
-        record.set(values);
+        formRecord.set(values);
       } else {
         // perform create
-        store.add(r);
+        store.add(user);
       }
 
-      store.sync();
-      win.close();
+      store.sync({
+        success: function() {
+          win.close();
+        },
+        failure: function(batch, options) {
+          // extract server side validation errors
+          var serverSideValidationErrors = batch.exceptions[0].error;
+
+          var errors = new Ext.data.Errors();
+          for (var field in serverSideValidationErrors) {
+            var message = serverSideValidationErrors[field].join(", ");
+            errors.add(undefined, { field: field, message: message });
+          }
+          form.getForm().markInvalid(errors);
+        }
+      });
     } else {
-      console.log(errors);
       form.getForm().markInvalid(errors);
     }
   },
@@ -82,7 +96,6 @@ Ext.define('AM.controller.Users', {
       store.remove(record);
       store.sync();
     }
-
   },
 
   selectionChange: function(selectionModel, selections) {

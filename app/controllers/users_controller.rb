@@ -14,7 +14,11 @@ class UsersController < ApplicationController
     user.save
 
     respond_with(user) do |format|
-      format.json
+      if user.valid?
+        format.json
+      else
+        format.json { render json: { success: false, errors: user.errors } }
+      end
     end
   end
 
@@ -23,7 +27,11 @@ class UsersController < ApplicationController
     user.update_attributes(params[:user])
 
     respond_with(user) do |format|
-      format.json
+      if user.valid?
+        format.json
+      else
+        format.json { render json: { success: false, errors: user.errors } }
+      end
     end
   end
 
