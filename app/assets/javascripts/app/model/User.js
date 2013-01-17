@@ -21,7 +21,7 @@ Ext.define('AM.model.User', {
     reader: {
       root: 'users',
       record: 'user',
-      successProperty: 'success',
+      successProperty: 'success'
     },
     writer: {
       // wrap user params for Rails
