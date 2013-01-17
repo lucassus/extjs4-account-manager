@@ -51,29 +51,27 @@ Ext.define('AM.controller.Users', {
     var form = win.down('form');
 
     var store = this.getUsersStore();
-    var record = form.getRecord();
     var values = form.getValues();
 
-    if (record) { // perform update
-      var r = Ext.create('AM.model.User', values);
+    var r = Ext.create('AM.model.User', values);
+    var errors = r.validate();
 
-      var errors = r.validate();
-      if (errors.isValid()) {
+    if (errors.isValid()) {
+      var record = form.getRecord();
+      if (record) {
+        // perform update
         record.set(values);
-
-        store.sync();
-        win.close();
       } else {
-        console.log(errors);
-        form.getForm().markInvalid(errors);
+        // perform create
+        store.add(r);
       }
-    } else { // perform create
-      store.add(values);
 
       store.sync();
       win.close();
+    } else {
+      console.log(errors);
+      form.getForm().markInvalid(errors);
     }
-
   },
 
   deleteUser: function() {
